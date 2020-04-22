@@ -1,0 +1,8 @@
+Bundle-Name: document-library-enhancement-services-api
+Bundle-SymbolicName: com.rivetlogic.tree.view.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.rivetlogic.tree.view.model,\
+	com.rivetlogic.tree.view.service
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../document-library-enhancement-services-service/service.xml

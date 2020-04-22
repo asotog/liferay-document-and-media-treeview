@@ -857,7 +857,7 @@ YUI.add(
 
         _addProcessCheckbox: function (newNodeConfig) {
           this.hiddenFieldsBox.append(
-            this.compiledItemSelectorTemplate(newNodeConfig)
+            //this.compiledItemSelectorTemplate(newNodeConfig)
           );
         },
 
@@ -873,7 +873,7 @@ YUI.add(
           var self = this;
           // Get folders children of this folder
           Liferay.Service(
-            "/content-tree-view-hook.enhanceddlapp/get-folders-and-file-entries-and-file-shortcuts",
+            "/rivetlogic_treeview.enhanceddlapp/get-folders-and-file-entries-and-file-shortcuts",
             {
               repositoryId: instance.repository,
               folderId: treeNode.get(NODE_ATTR_ID),

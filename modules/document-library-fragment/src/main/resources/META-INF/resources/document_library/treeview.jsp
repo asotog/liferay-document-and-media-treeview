@@ -1,4 +1,5 @@
 <%
+int rivetts = 20180216; // avoid caching on css and js 2
 String MODULE_PATH = "/o/document-library-web";
 // Base URL for view file entry
 PortletURL viewFileEntryURL = renderResponse.createRenderURL();
@@ -36,9 +37,6 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
     }	 
 }
 %>
-<pre>
-    ancestors ids: <%=ancestorIds %>
-</pre>
 <script>
 (function() {
     var MODULE_PATH = '<%= MODULE_PATH %>';
@@ -51,14 +49,21 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
                     'rl-content-tree-view' : {
                         path : 'rl-content-tree-view.js',
                         requires : []
-                    }
+					},
+					'rl-content-tree-view-css': {
+                        path: 'rl-content-tree-view.css',
+                        type: 'css'
+               		 }
                 },
                 root : MODULE_PATH + '/js/'
-            }
+            },
         }
     });
 })();
 </script>
+<style type="text/css">
+@import url("<%= MODULE_PATH %>/css/rl-content-tree-view.css?t=<%= rivetts %>");
+</style>
 <div id="tree-container" class="tree-container">
 
 </div>
