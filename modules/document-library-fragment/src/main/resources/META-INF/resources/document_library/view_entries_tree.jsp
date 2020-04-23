@@ -1,5 +1,5 @@
 <%
-int rivetts = 20180216; // avoid caching on css and js 2
+int rivetts = 20200423; // avoid caching on css and js 2
 String MODULE_PATH = "/o/document-library-web";
 // Base URL for view file entry
 PortletURL viewFileEntryURL = renderResponse.createRenderURL();
@@ -37,6 +37,12 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
     }	 
 }
 %>
+<script id="<portlet:namespace />item-selector-template" type="text/x-handlebars-template">
+	<c:set var="rowIds" value="<%= RowChecker.ROW_IDS %>" />
+	<li data-selectable="true">
+		<aui:input cssClass="overlay entry-selector" label="" value="{{rowCheckerId}}" name="{{rowCheckerName}}" type="checkbox"  />
+	</li>
+</script>
 <script>
 (function() {
     var MODULE_PATH = '<%= MODULE_PATH %>';
@@ -49,11 +55,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
                     'rl-content-tree-view' : {
                         path : 'rl-content-tree-view.js',
                         requires : []
-					},
-					'rl-content-tree-view-css': {
-                        path: 'rl-content-tree-view.css',
-                        type: 'css'
-               		 }
+					}
                 },
                 root : MODULE_PATH + '/js/'
             },
@@ -64,15 +66,12 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 <style type="text/css">
 @import url("<%= MODULE_PATH %>/css/rl-content-tree-view.css?t=<%= rivetts %>");
 </style>
-<div id="tree-container" class="tree-container">
-
-</div>
 <aui:script use="rl-content-tree-view">
 	var <portlet:namespace />treeViewNode = A.one('#<portlet:namespace />entriesContainer .tree-container');
 	
 	<portlet:namespace />treeView = new A.Rivet.ContentTreeView({
-        namespace: '<portlet:namespace />',
-        treeBox: '.tree-container',
+		namespace: '<portlet:namespace />',
+		searchContainer: Liferay.SearchContainer.get("<portlet:namespace />entries"),
         treeTarget: A.Rivet.TreeTargetDL,
         repositoryId: '<%= repositoryId %>',
         scopeGroupId: '<%= scopeGroupId %>',

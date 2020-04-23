@@ -23,7 +23,8 @@ YUI.add(
     A.Rivet.TreeTargetJournal = "journal";
     A.Rivet.TreeTargetDL = "documentLibrary";
 
-    var ENTRIES_CONTAINER = "entriesContainer";
+    var ENTRIES_CONTAINER = "entries";
+    var ENTRIES_SEARCH_CONTAINER = "entriesSearchContainer";
     var BOUNDING_BOX = "boundingBox";
     var TREE_NODE = "tree-node";
     var NODE_SELECTOR = "." + TREE_NODE;
@@ -94,11 +95,11 @@ YUI.add(
           var shortcutImageURL = this.get("shortcutImageURL");
 
           var instance = this;
-          var boundingBoxId = this.ns + this.get("treeBox");
+          var boundingBoxId = 'rl-tree-container';
           var hiddenBoundingBoxId = boundingBoxId + "HiddenFields";
           var previewBoundingBoxId = boundingBoxId + "Preview";
 
-          A.one("#" + this.ns + ENTRIES_CONTAINER).append(
+          A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).append(
             '<div id="' +
               previewBoundingBoxId +
               '" class="rl-tree-preview"></div>'
@@ -106,19 +107,19 @@ YUI.add(
           A.one("#" + this.ns + ENTRIES_CONTAINER).append(
             '<div id="' + boundingBoxId + '" class="bounding-box"></div>'
           );
-          A.one("#" + this.ns + ENTRIES_CONTAINER).append(
+          A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).append(
             '<div id="' + hiddenBoundingBoxId + '" class="hidden-bounding-box"></div>'
           );
 
-          this.hiddenFieldsBox = A.one("#" + this.ns + ENTRIES_CONTAINER).one('.hidden-bounding-box').hide();
-          this.previewBoundingBox = A.one("#" + this.ns + ENTRIES_CONTAINER).one('.rl-tree-preview');
+          this.hiddenFieldsBox = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).one('.hidden-bounding-box').hide();
+          this.previewBoundingBox = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).one('.rl-tree-preview');
 
           this.shortcutNode = A.Lang.sub(TPL_SHORTCUT_PREVIEW_NODE, {
             shortcutImageURL: shortcutImageURL,
           });
 
           this.contentTree = new A.TreeViewDD({
-            boundingBox: A.one("#" + this.ns + ENTRIES_CONTAINER).one('.bounding-box'),
+            boundingBox: '#' + boundingBoxId,
             children: [
               {
                 id: folderId,
@@ -162,30 +163,30 @@ YUI.add(
         //     A.bind(instance._selectAllHiddenCheckbox, this)
         //   );
 
-        //   //template
-        //   var itemSelectorTemplate = A.one(
-        //     "#" + this.ns + "item-selector-template"
-        //   ).get("innerHTML");
+        //template
+        var itemSelectorTemplate = A.one(
+          "#" + this.ns + "item-selector-template"
+        ).get("innerHTML");
 
-        //   // some template tokens get lost because encoding:
-        //   itemSelectorTemplate = itemSelectorTemplate.replace(
-        //     new RegExp(TPT_ENCODED_DELIM_OPEN, REG_EXP_GLOBAL),
-        //     TPT_DELIM_OPEN
-        //   );
-        //   itemSelectorTemplate = itemSelectorTemplate.replace(
-        //     new RegExp(TPT_ENCODED_DELIM_CLOSE, REG_EXP_GLOBAL),
-        //     TPT_DELIM_CLOSE
-        //   );
+        // some template tokens get lost because encoding:
+        itemSelectorTemplate = itemSelectorTemplate.replace(
+          new RegExp(TPT_ENCODED_DELIM_OPEN, REG_EXP_GLOBAL),
+          TPT_DELIM_OPEN
+        );
+        itemSelectorTemplate = itemSelectorTemplate.replace(
+          new RegExp(TPT_ENCODED_DELIM_CLOSE, REG_EXP_GLOBAL),
+          TPT_DELIM_CLOSE
+        );
 
-        //   // compiles template
-        //   this.compiledItemSelectorTemplate = A.Handlebars.compile(
-        //     itemSelectorTemplate
-        //   );
+        // compiles template
+        this.compiledItemSelectorTemplate = A.Handlebars.compile(
+          itemSelectorTemplate
+        );
 
           // loading mask when moving multiple entries
           this.loadingMaskMove = new A.LoadingMask({
             "strings.loading": "Moving Files",
-            target: A.one("#" + this.ns + ENTRIES_CONTAINER),
+            target: A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER),
           });
         },
 
@@ -527,6 +528,7 @@ YUI.add(
 
         _mouseOverHandler: function (event) {
           event.stopPropagation();
+          window.setTimeout(() => this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide(), 50);
           var treeNode = this.contentTree.getNodeById(
             event.currentTarget.get(NODE_ATTR_ID)
           );
@@ -722,7 +724,7 @@ YUI.add(
 
         _resetCheckedArray: function () {
           var self = this;
-          var tree = A.one("#" + this.ns + ENTRIES_CONTAINER);
+          var tree = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER);
           this.checkedArray.forEach(function (id) {
             var childDOM = tree.one("#" + id);
             childDOM.getData(TREE_NODE).uncheck();
@@ -857,7 +859,7 @@ YUI.add(
 
         _addProcessCheckbox: function (newNodeConfig) {
           this.hiddenFieldsBox.append(
-            //this.compiledItemSelectorTemplate(newNodeConfig)
+            this.compiledItemSelectorTemplate(newNodeConfig)
           );
         },
 
@@ -1035,9 +1037,6 @@ YUI.add(
           namespace: {
             value: null,
           },
-          treeBox: {
-            value: null,
-          },
           treeTarget: {
             value: null,
           },
@@ -1066,6 +1065,9 @@ YUI.add(
             value: null,
           },
           defaultDocumentImagePath: {
+            value: null,
+          },
+          searchContainer: {
             value: null,
           },
         },

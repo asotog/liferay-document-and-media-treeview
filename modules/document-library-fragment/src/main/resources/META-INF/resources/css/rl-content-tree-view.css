@@ -31,3 +31,13 @@
         display: none;
     }
 }
+
+.has-tree-view  .searchcontainer-content .splitter.splitter-spaced,
+.has-tree-view  .searchcontainer-content > ul {
+    display: none !important;
+}
+
+#rl-tree-container {
+    float: left;
+    width: 60%;
+}

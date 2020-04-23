@@ -69,15 +69,15 @@ if (portletTitleBasedNavigation && (folderId != DLFolderConstants.DEFAULT_PARENT
 // BEGIN: Rivet Logic
 String TREE_VIEW = "treeView";
 SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
+String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : ""; 
 %>
-<div class="document-container" id="<portlet:namespace />entriesContainer">
+<div class="document-container <%=treeViewCss %>" id="<portlet:namespace />entriesContainer">
 <c:choose>
 	<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-		<%@ include file="/document_library/treeview.jsp" %>
+		<%@ include file="/document_library/view_entries_tree.jsp" %>
 	</c:when>
 </c:choose>
 <%-- END: Rivet Logic --%>
-
 <liferay-ui:search-container
 	id="entries"
 	searchContainer="<%= dlSearchContainer %>"
@@ -142,6 +142,7 @@ SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
 				<c:choose>
 					<%-- BEGIN Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
+						<liferay-ui:search-container-column-text>tree file entry</liferay-ui:search-container-column-text>
 						<%
 						request.setAttribute("view_entries.jsp-fileShortcut", fileShortcut);
 						request.setAttribute("view_entries.jsp-fileEntry", fileEntry);
@@ -395,6 +396,7 @@ SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
 				<c:choose>
 					<%-- BEGIN Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
+						<liferay-ui:search-container-column-text>tree entry</liferay-ui:search-container-column-text>
 						<%
 						request.setAttribute("view_entries.jsp-folder", curFolder);
 						%>
@@ -540,7 +542,7 @@ SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator
-		displayStyle="<%= displayStyle %>"
+		displayStyle='<%= displayStyle.equals(TREE_VIEW) ? "icon" : displayStyle %>'
 		markupView="lexicon"
 		resultRowSplitter="<%= new DLResultRowSplitter() %>"
 		searchContainer="<%= dlSearchContainer %>"
