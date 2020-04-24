@@ -75,7 +75,7 @@ String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : "";
 </c:choose>
 <%-- END Rivet Logic --%>
 
-<div class="document-container <%=treeViewCss %>" id="<portlet:namespace />entriesContainer">
+<div class="document-container <%=treeViewCss %> d-none" id="<portlet:namespace />entriesContainer">
 <liferay-ui:search-container
 	id="entries"
 	searchContainer="<%= dlSearchContainer %>"

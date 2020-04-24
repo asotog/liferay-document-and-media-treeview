@@ -78,6 +78,9 @@ YUI.add(
 
         initializer: function () {
           var instance = this;
+          // show container when js is ready to start rendering tree
+          A.one('.has-tree-view').removeClass('d-none');
+
           this.ns = this.get("namespace");
           this.scopeGroupId = this.get("scopeGroupId");
           this._getTargetAttributes();
@@ -167,12 +170,6 @@ YUI.add(
             NODE_SELECTOR
           );
 
-          // This is used to manage the selection from toolbar
-        //   A.one("#" + this.ns + checkAllEntriesId + "Checkbox").on(
-        //     "click",
-        //     A.bind(instance._selectAllHiddenCheckbox, this)
-        //   );
-
         //template
         var itemSelectorTemplate = A.one(
           "#" + this.ns + "item-selector-template"
@@ -199,8 +196,6 @@ YUI.add(
             target: A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER),
           });
 
-          this.disableToolbarControls();
-          
           Liferay.fire('rl-content-tree-view:initialized');
         },
 
@@ -637,8 +632,6 @@ YUI.add(
           }
 
           this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
-
-          this.disableToolbarControls();
         },
 
         _createPreview: function (treeNode) {
@@ -903,21 +896,6 @@ YUI.add(
           } else {
             this._getWCChildren(treeNode, instance);
           }
-        },
-
-        /**
-         * toggles unnecesary toolbar controls for tree
-         */
-        disableToolbarControls() {
-          window.setTimeout(() => { // it depends on toolbar to be loaded
-            var toolbarSelector = `#${this.ns}entriesManagementToolbar`;
-            var toolbarItemsContainer = A.one(toolbarSelector).one('.management-bar > div');
-            toolbarItemsContainer.one('ul:nth-child(1)').setStyle('visibility', 'hidden');
-            var searchForm = toolbarItemsContainer.one('.navbar-form');
-            if (searchForm) {
-              toolbarItemsContainer.one('.navbar-form').setStyle('visibility', 'hidden');
-            }
-          }, 10)
         },
 
         _getDLChildren: function (treeNode, instance) {

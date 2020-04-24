@@ -3,7 +3,7 @@
 <%@ include file="/document_library/init.jsp" %>
 
 <%
-int rivetts = 20200424; // avoid caching on css and js 2
+int rivetts = 2020042401; // avoid caching on css and js 2
 String MODULE_PATH = "/o/document-library-web";
 
 long repositoryId = GetterUtil.getLong((String)request.getAttribute("view.jsp-repositoryId"));
@@ -74,6 +74,10 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 </script>
 <style type="text/css">
 @import url("<%= MODULE_PATH %>/css/rl-content-tree-view.css?t=<%= rivetts %>");
+.has-tree-view  .searchcontainer-content .splitter.splitter-spaced,
+.has-tree-view  .searchcontainer-content > ul {
+    display: none !important;
+}
 </style>
 <aui:script use="rl-content-tree-view">
 	<portlet:namespace />treeView = new A.Rivet.ContentTreeView({

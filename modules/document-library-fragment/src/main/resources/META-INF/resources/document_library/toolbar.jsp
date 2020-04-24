@@ -24,26 +24,29 @@
 	}
 
 	viewsList.add(viewTypeItem);
+	String treeViewToolBarCss = _selectedType.equals(TREE_VIEW) ? "treeview-toolbar" : "";
 %>
 
-<clay:management-toolbar
-	actionDropdownItems="<%= dlAdminManagementToolbarDisplayContext.getActionDropdownItems() %>"
-	clearResultsURL="<%= dlAdminManagementToolbarDisplayContext.getClearResultsURL() %>"
-	componentId="<%= dlAdminManagementToolbarDisplayContext.getComponentId() %>"
-	creationMenu="<%= dlAdminManagementToolbarDisplayContext.getCreationMenu() %>"
-	defaultEventHandler='<%= renderResponse.getNamespace() + "DocumentLibrary" %>'
-	disabled="<%= dlAdminManagementToolbarDisplayContext.isDisabled() %>"
-	filterDropdownItems="<%= dlAdminManagementToolbarDisplayContext.getFilterDropdownItems() %>"
-	filterLabelItems="<%= dlAdminManagementToolbarDisplayContext.getFilterLabelItems() %>"
-	infoPanelId="infoPanelId"
-	itemsTotal="<%= dlAdminManagementToolbarDisplayContext.getTotalItems() %>"
-	searchActionURL="<%= String.valueOf(dlAdminManagementToolbarDisplayContext.getSearchURL()) %>"
-	searchContainerId="entries"
-	selectable="<%= dlAdminManagementToolbarDisplayContext.isSelectable() %>"
-	showInfoButton="<%= true %>"
-	showSearch="<%= dlAdminManagementToolbarDisplayContext.isShowSearch() %>"
-	sortingOrder="<%= dlAdminManagementToolbarDisplayContext.getSortingOrder() %>"
-	sortingURL="<%= String.valueOf(dlAdminManagementToolbarDisplayContext.getSortingURL()) %>"
-	supportsBulkActions="<%= true %>"
-	viewTypeItems="<%= viewsList %>"
-/>
+<div class="<%= treeViewToolBarCss %>">
+	<clay:management-toolbar
+		actionDropdownItems="<%= dlAdminManagementToolbarDisplayContext.getActionDropdownItems() %>"
+		clearResultsURL="<%= dlAdminManagementToolbarDisplayContext.getClearResultsURL() %>"
+		componentId="<%= dlAdminManagementToolbarDisplayContext.getComponentId() %>"
+		creationMenu="<%= dlAdminManagementToolbarDisplayContext.getCreationMenu() %>"
+		defaultEventHandler='<%= renderResponse.getNamespace() + "DocumentLibrary" %>'
+		disabled="<%= dlAdminManagementToolbarDisplayContext.isDisabled() %>"
+		filterDropdownItems="<%= dlAdminManagementToolbarDisplayContext.getFilterDropdownItems() %>"
+		filterLabelItems="<%= dlAdminManagementToolbarDisplayContext.getFilterLabelItems() %>"
+		infoPanelId="infoPanelId"
+		itemsTotal="<%= dlAdminManagementToolbarDisplayContext.getTotalItems() %>"
+		searchActionURL="<%= String.valueOf(dlAdminManagementToolbarDisplayContext.getSearchURL()) %>"
+		searchContainerId="entries"
+		selectable="<%= dlAdminManagementToolbarDisplayContext.isSelectable() %>"
+		showInfoButton="<%= true %>"
+		showSearch="<%= dlAdminManagementToolbarDisplayContext.isShowSearch() %>"
+		sortingOrder="<%= dlAdminManagementToolbarDisplayContext.getSortingOrder() %>"
+		sortingURL="<%= String.valueOf(dlAdminManagementToolbarDisplayContext.getSortingURL()) %>"
+		supportsBulkActions="<%= true %>"
+		viewTypeItems="<%= viewsList %>"
+		/>
+</div>
