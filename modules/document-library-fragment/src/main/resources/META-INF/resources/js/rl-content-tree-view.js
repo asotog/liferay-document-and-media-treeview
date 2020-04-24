@@ -77,6 +77,7 @@ YUI.add(
         shortcutNode: null,
 
         initializer: function () {
+          var instance = this;
           this.ns = this.get("namespace");
           this.scopeGroupId = this.get("scopeGroupId");
           this._getTargetAttributes();
@@ -98,6 +99,13 @@ YUI.add(
           var boundingBoxId = 'rl-tree-container';
           var hiddenBoundingBoxId = boundingBoxId + "HiddenFields";
           var previewBoundingBoxId = boundingBoxId + "Preview";
+
+          if (!A.one("#" + this.ns + ENTRIES_CONTAINER)) {
+            Liferay.on(`${this.ns}${ENTRIES_CONTAINER}:registered`, function() {
+              window.setTimeout(() => instance.initializer(), 50);
+            });
+            return;
+          }
 
           A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).append(
             '<div id="' +
@@ -188,13 +196,29 @@ YUI.add(
             "strings.loading": "Moving Files",
             target: A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER),
           });
+
+          Liferay.fire('rl-content-tree-view:initialized');
         },
 
         addContentFolder: function (newNodeConfig, parentNode) {
+          var instance = this;
+          if (!this.contentTree) {
+            Liferay.on('rl-content-tree-view:initialized', function() {
+              instance.addContentFolder(newNodeConfig, parentNode);
+            });
+            return;
+          }
           this._addContentNode(newNodeConfig, parentNode, true);
         },
 
         addContentEntry: function (newNodeConfig, parentNode) {
+          var instance = this;
+          if (!this.contentTree) {
+            Liferay.on('rl-content-tree-view:initialized', function() {
+              instance.addContentEntry(newNodeConfig, parentNode);
+            });
+            return;
+          }
           newNodeConfig.expanded = false;
           newNodeConfig.fullLoaded = true;
           this._addContentNode(newNodeConfig, parentNode, false);

@@ -13,9 +13,6 @@
  *
  */
 --%>
-
-<%@ page import="com.liferay.portal.kernel.dao.search.RowChecker" %>
-<%@ page import="com.liferay.document.library.kernel.model.DLFileShortcut" %>
 <%@ include file="/document_library/init.jsp" %>
 
 <%
@@ -69,15 +66,10 @@ if (portletTitleBasedNavigation && (folderId != DLFolderConstants.DEFAULT_PARENT
 // BEGIN: Rivet Logic
 String TREE_VIEW = "treeView";
 SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
-String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : ""; 
+String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : "";
+boolean isTreeInitializingRendered = false;
 %>
 <div class="document-container <%=treeViewCss %>" id="<portlet:namespace />entriesContainer">
-<c:choose>
-	<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-		<%@ include file="/document_library/view_entries_tree.jsp" %>
-	</c:when>
-</c:choose>
-<%-- END: Rivet Logic --%>
 <liferay-ui:search-container
 	id="entries"
 	searchContainer="<%= dlSearchContainer %>"
@@ -142,7 +134,14 @@ String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : "";
 				<c:choose>
 					<%-- BEGIN Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>tree file entry</liferay-ui:search-container-column-text>
+						<liferay-ui:search-container-column-text>
+							<c:choose>
+								<c:when test='<%= !isTreeInitializingRendered %>'>
+									<% isTreeInitializingRendered = true; %>
+									<liferay-util:include page="/document_library/view_entries_tree.jsp" servletContext="<%= application %>" />
+								</c:when>
+							</c:choose>
+						</liferay-ui:search-container-column-text>
 						<%
 						request.setAttribute("view_entries.jsp-fileShortcut", fileShortcut);
 						request.setAttribute("view_entries.jsp-fileEntry", fileEntry);
@@ -396,7 +395,14 @@ String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : "";
 				<c:choose>
 					<%-- BEGIN Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>tree entry</liferay-ui:search-container-column-text>
+						<liferay-ui:search-container-column-text>
+							<c:choose>
+								<c:when test='<%= !isTreeInitializingRendered %>'>
+									<% isTreeInitializingRendered = true; %>
+									<liferay-util:include page="/document_library/view_entries_tree.jsp" servletContext="<%= application %>" />
+								</c:when>
+							</c:choose>
+						</liferay-ui:search-container-column-text>
 						<%
 						request.setAttribute("view_entries.jsp-folder", curFolder);
 						%>

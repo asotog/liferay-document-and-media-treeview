@@ -36,5 +36,4 @@ PortletURL tempRowURL = (PortletURL)request.getAttribute("view_entries.jsp-tempR
 		expanded : false,
    		fullLoaded : false
 	});
-
 </aui:script>
