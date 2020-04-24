@@ -29,7 +29,11 @@ if ((user.getUserId() == fileEntry.getUserId()) || permissionChecker.isCompanyAd
 }
 
 DLFileShortcut fileShortcut = (DLFileShortcut)request.getAttribute("view_entries.jsp-fileShortcut");
-PortletURL tempRowURL = (PortletURL)request.getAttribute("view_entries.jsp-tempRowURL");
+PortletURL rowURL = liferayPortletResponse.createRenderURL();
+
+rowURL.setParameter("mvcRenderCommandName", "/document_library/view_file_entry");
+rowURL.setParameter("redirect", HttpUtil.removeParameter(currentURL, liferayPortletResponse.getNamespace() + "ajax"));
+rowURL.setParameter("fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
 
 String rowCheckerName = FileEntry.class.getSimpleName();
 long rowCheckerId = fileEntry.getFileEntryId();
@@ -54,6 +58,6 @@ if (fileShortcut != null) {
 		rowCheckerName: 'rowIds<%= rowCheckerName %>',
 		parentFolderId: '<%= parentFolderId %>',
 		previewURL:'<%= DLUtil.getThumbnailSrc(fileEntry, latestFileVersion, fileShortcut, themeDisplay) %>',
-		viewURL: '<%= tempRowURL %>'
+		viewURL: '<%= rowURL.toString() %>'
 	});
 </aui:script>

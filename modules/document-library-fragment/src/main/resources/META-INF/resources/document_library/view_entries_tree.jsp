@@ -11,9 +11,10 @@ long folderId = GetterUtil.getLong((String)request.getAttribute("view.jsp-folder
 String navigation = ParamUtil.getString(request, "navigation", "home");
 
 // Base URL for view file entry
-PortletURL viewFileEntryURL = renderResponse.createRenderURL();
-// viewFileEntryURL.setParameter("struts_action", "/document_library/view_file_entry");
-// viewFileEntryURL.setParameter("redirect", HttpUtil.removeParameter(currentURL, liferayPortletResponse.getNamespace() + "ajax"));
+PortletURL viewFileEntryURL = liferayPortletResponse.createRenderURL();
+
+viewFileEntryURL.setParameter("mvcRenderCommandName", "/document_library/view_file_entry");
+viewFileEntryURL.setParameter("redirect", HttpUtil.removeParameter(currentURL, liferayPortletResponse.getNamespace() + "ajax"));
 
 List<Long> ancestorIds = new ArrayList<Long>();
 
