@@ -66,7 +66,7 @@ if (portletTitleBasedNavigation && (folderId != DLFolderConstants.DEFAULT_PARENT
 // BEGIN: Rivet Logic
 String TREE_VIEW = "treeView";
 SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
-String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : "";
+String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view d-none" : "";
 %>
 <c:choose>
 	<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
@@ -75,7 +75,7 @@ String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : "";
 </c:choose>
 <%-- END Rivet Logic --%>
 
-<div class="document-container <%=treeViewCss %> d-none" id="<portlet:namespace />entriesContainer">
+<div class="document-container <%=treeViewCss %>" id="<portlet:namespace />entriesContainer">
 <liferay-ui:search-container
 	id="entries"
 	searchContainer="<%= dlSearchContainer %>"

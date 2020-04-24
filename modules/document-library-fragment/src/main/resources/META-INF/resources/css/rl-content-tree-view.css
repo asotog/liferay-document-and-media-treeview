@@ -38,10 +38,6 @@
     width: 60%;
 }
 
-.treeview-toolbar {
-    
-}
-
 /* hide toolbars that does not belong to tree feature */
 .treeview-toolbar .management-bar > div ul:nth-child(1),
 .treeview-toolbar .management-bar > div .navbar-form {
