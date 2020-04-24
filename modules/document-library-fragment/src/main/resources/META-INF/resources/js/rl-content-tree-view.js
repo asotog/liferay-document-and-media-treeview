@@ -113,7 +113,7 @@ YUI.add(
               '" class="rl-tree-preview"></div>'
           );
           A.one("#" + this.ns + ENTRIES_CONTAINER).append(
-            '<div id="' + boundingBoxId + '" class="bounding-box"></div>'
+            '<div id="' + boundingBoxId + '" class="sheet bounding-box"></div>'
           );
           A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).append(
             '<div id="' + hiddenBoundingBoxId + '" class="hidden-bounding-box"></div>'
@@ -147,6 +147,8 @@ YUI.add(
               "drag:mouseup": A.bind(instance._mouseUp, this),
             },
           }).render();
+
+          A.one('#' + boundingBoxId).addClass('sheet');
 
           this.contentRoot = this.contentTree.getNodeById(folderId);
           this.contentRoot.set(NODE_ATTR_IS_FOLDER, true);
@@ -197,7 +199,13 @@ YUI.add(
             target: A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER),
           });
 
+          this.disableToolbarControls();
+          
           Liferay.fire('rl-content-tree-view:initialized');
+        },
+
+        destroy: function() {
+          console.log('detroying')
         },
 
         addContentFolder: function (newNodeConfig, parentNode) {
@@ -629,6 +637,8 @@ YUI.add(
           }
 
           this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
+
+          this.disableToolbarControls();
         },
 
         _createPreview: function (treeNode) {
@@ -893,6 +903,21 @@ YUI.add(
           } else {
             this._getWCChildren(treeNode, instance);
           }
+        },
+
+        /**
+         * toggles unnecesary toolbar controls for tree
+         */
+        disableToolbarControls() {
+          window.setTimeout(() => { // it depends on toolbar to be loaded
+            var toolbarSelector = `#${this.ns}entriesManagementToolbar`;
+            var toolbarItemsContainer = A.one(toolbarSelector).one('.management-bar > div');
+            toolbarItemsContainer.one('ul:nth-child(1)').setStyle('visibility', 'hidden');
+            var searchForm = toolbarItemsContainer.one('.navbar-form');
+            if (searchForm) {
+              toolbarItemsContainer.one('.navbar-form').setStyle('visibility', 'hidden');
+            }
+          }, 10)
         },
 
         _getDLChildren: function (treeNode, instance) {

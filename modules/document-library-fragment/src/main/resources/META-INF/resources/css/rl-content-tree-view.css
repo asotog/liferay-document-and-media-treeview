@@ -39,5 +39,6 @@
 
 #rl-tree-container {
     float: left;
+    padding-bottom: 1.5rem;
     width: 60%;
 }

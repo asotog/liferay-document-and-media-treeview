@@ -3,7 +3,7 @@
 <%@ include file="/document_library/init.jsp" %>
 
 <%
-int rivetts = 20200423; // avoid caching on css and js 2
+int rivetts = 20200424; // avoid caching on css and js 2
 String MODULE_PATH = "/o/document-library-web";
 
 long repositoryId = GetterUtil.getLong((String)request.getAttribute("view.jsp-repositoryId"));
