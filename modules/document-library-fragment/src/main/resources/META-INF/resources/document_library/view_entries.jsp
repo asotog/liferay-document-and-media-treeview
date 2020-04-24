@@ -67,8 +67,14 @@ if (portletTitleBasedNavigation && (folderId != DLFolderConstants.DEFAULT_PARENT
 String TREE_VIEW = "treeView";
 SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
 String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view" : "";
-boolean isTreeInitializingRendered = false;
 %>
+<c:choose>
+	<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
+		<liferay-util:include page="/document_library/view_entries_tree.jsp" servletContext="<%= application %>" />
+	</c:when>
+</c:choose>
+<%-- END Rivet Logic --%>
+
 <div class="document-container <%=treeViewCss %>" id="<portlet:namespace />entriesContainer">
 <liferay-ui:search-container
 	id="entries"
@@ -134,14 +140,7 @@ boolean isTreeInitializingRendered = false;
 				<c:choose>
 					<%-- BEGIN Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>
-							<c:choose>
-								<c:when test='<%= !isTreeInitializingRendered %>'>
-									<% isTreeInitializingRendered = true; %>
-									<liferay-util:include page="/document_library/view_entries_tree.jsp" servletContext="<%= application %>" />
-								</c:when>
-							</c:choose>
-						</liferay-ui:search-container-column-text>
+						<liferay-ui:search-container-column-text>&nbsp;</liferay-ui:search-container-column-text>
 						<%
 						request.setAttribute("view_entries.jsp-fileShortcut", fileShortcut);
 						request.setAttribute("view_entries.jsp-fileEntry", fileEntry);
@@ -395,14 +394,7 @@ boolean isTreeInitializingRendered = false;
 				<c:choose>
 					<%-- BEGIN Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>
-							<c:choose>
-								<c:when test='<%= !isTreeInitializingRendered %>'>
-									<% isTreeInitializingRendered = true; %>
-									<liferay-util:include page="/document_library/view_entries_tree.jsp" servletContext="<%= application %>" />
-								</c:when>
-							</c:choose>
-						</liferay-ui:search-container-column-text>
+						<liferay-ui:search-container-column-text>&nbsp;</liferay-ui:search-container-column-text>
 						<%
 						request.setAttribute("view_entries.jsp-folder", curFolder);
 						%>
