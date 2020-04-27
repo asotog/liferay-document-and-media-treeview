@@ -501,7 +501,7 @@ YUI.add(
             }
   
             Liferay.Service(
-              "/journalfolder/move-folder",
+              "/journal.journalfolder/move-folder",
               {
                 folderId: folder.get(NODE_ATTR_ID),
                 parentFolderId: target.get(NODE_ATTR_ID),
@@ -523,7 +523,7 @@ YUI.add(
             }
   
             Liferay.Service(
-              "/journalarticle/move-article",
+              "/journal.journalarticle/move-article",
               {
                 groupId: this.scopeGroupId,
                 articleId: entry.get(NODE_ATTR_ID),

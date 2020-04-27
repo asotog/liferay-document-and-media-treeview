@@ -90,7 +90,7 @@ if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID){
         rootFolderLabel: '<%= treeFolderTitle %>',
         checkAllId: '<%= RowChecker.ALL_ROW_IDS %>',
         viewPageBaseURL: '<%= viewArticleURL %>',
-        defaultArticleImage: '<%= themeDisplay.getPathThemeImages() + "/file_system/large/" %>',
+        defaultArticleImage: '<%= themeDisplay.getPathThemeImages() + "/file_system/large/article.png" %>',
     });
     
 	<% 
