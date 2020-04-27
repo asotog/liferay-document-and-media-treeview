@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+
+import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -47,6 +50,10 @@ public interface EnhancedJournalAppService extends BaseService {
 	 *
 	 * Never modify or reference this interface directly. Always use {@link EnhancedJournalAppServiceUtil} to access the enhanced journal app remote service. Add custom service methods to <code>com.rivetlogic.tree.view.service.impl.EnhancedJournalAppServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object> getFoldersAndArticles(
+			long groupId, long folderId, int start, int end)
+		throws SystemException;
 
 	/**
 	 * Returns the OSGi service identifier.

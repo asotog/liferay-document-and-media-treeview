@@ -37,6 +37,13 @@ public class EnhancedJournalAppServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.rivetlogic.tree.view.service.impl.EnhancedJournalAppServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static java.util.List<Object> getFoldersAndArticles(
+			long groupId, long folderId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+
+		return getService().getFoldersAndArticles(
+			groupId, folderId, start, end);
+	}
 
 	/**
 	 * Returns the OSGi service identifier.

@@ -33,6 +33,15 @@ public class EnhancedJournalAppServiceWrapper
 		_enhancedJournalAppService = enhancedJournalAppService;
 	}
 
+	@Override
+	public java.util.List<Object> getFoldersAndArticles(
+			long groupId, long folderId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+
+		return _enhancedJournalAppService.getFoldersAndArticles(
+			groupId, folderId, start, end);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

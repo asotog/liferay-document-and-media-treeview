@@ -970,7 +970,7 @@ YUI.add(
             var self = this;
             // Get folders children of this folder
             Liferay.Service(
-              "/content-tree-view-hook.enhancedjournalapp/get-folders-and-articles",
+              "/rivetlogic_treeview.enhancedjournalapp/get-folders-and-articles",
               {
                 groupId: instance.scopeGroupId,
                 folderId: treeNode.get(NODE_ATTR_ID),
