@@ -79,6 +79,10 @@ YUI.add(
         initializer: function () {
           var instance = this;
           // show container when js is ready to start rendering tree
+          var hasTreeViewElement = A.one('.has-tree-view');
+          if (!hasTreeViewElement) {
+            return;
+          }
           A.one('.has-tree-view').removeClass('d-none');
 
           this.ns = this.get("namespace");
@@ -104,26 +108,27 @@ YUI.add(
           var previewBoundingBoxId = boundingBoxId + "Preview";
 
           if (!A.one("#" + this.ns + ENTRIES_CONTAINER)) {
-            Liferay.on(`${this.ns}${ENTRIES_CONTAINER}:registered`, function() {
+            Liferay.once(`${this.ns}${ENTRIES_CONTAINER}:registered`, function() {
               window.setTimeout(() => instance.initializer(), 50);
             });
             return;
           }
-
-          A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).append(
+          var searchContainerElement = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER);
+          var entriesContainer = A.one("#" + this.ns + ENTRIES_CONTAINER);
+          searchContainerElement.append(
             '<div id="' +
               previewBoundingBoxId +
               '" class="rl-tree-preview"></div>'
           );
-          A.one("#" + this.ns + ENTRIES_CONTAINER).append(
+          entriesContainer.append(
             '<div id="' + boundingBoxId + '" class="sheet bounding-box"></div>'
           );
-          A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).append(
+          searchContainerElement.append(
             '<div id="' + hiddenBoundingBoxId + '" class="hidden-bounding-box"></div>'
           );
 
-          this.hiddenFieldsBox = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).one('.hidden-bounding-box').hide();
-          this.previewBoundingBox = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER).one('.rl-tree-preview');
+          this.hiddenFieldsBox = searchContainerElement.one('.hidden-bounding-box').hide();
+          this.previewBoundingBox = searchContainerElement.one('.rl-tree-preview');
 
           this.shortcutNode = A.Lang.sub(TPL_SHORTCUT_PREVIEW_NODE, {
             shortcutImageURL: shortcutImageURL,
@@ -197,11 +202,15 @@ YUI.add(
           });
 
           Liferay.fire('rl-content-tree-view:initialized');
+
+          // destroy DOM before navigate
+          Liferay.once('beforeNavigate', function(event) {
+            entriesContainer.all(`#${boundingBoxId}`).remove();
+            searchContainerElement.all(`#${previewBoundingBoxId}`).remove();
+            searchContainerElement.all(`#${hiddenBoundingBoxId}`).remove();
+          });
         },
 
-        destroy: function() {
-          console.log('detroying')
-        },
 
         addContentFolder: function (newNodeConfig, parentNode) {
           var instance = this;
