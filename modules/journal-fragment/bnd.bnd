@@ -1,0 +1,4 @@
+Bundle-Name: journal-fragment
+Bundle-SymbolicName: journal.fragment
+Bundle-Version: 1.0.0
+Fragment-Host: com.liferay.journal.web;bundle-version="3.0.37"

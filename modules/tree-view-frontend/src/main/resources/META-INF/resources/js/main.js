@@ -107,14 +107,14 @@ YUI.add(
             var hiddenBoundingBoxId = boundingBoxId + "HiddenFields";
             var previewBoundingBoxId = boundingBoxId + "Preview";
   
-            if (!A.one("#" + this.ns + ENTRIES_CONTAINER)) {
-              Liferay.once(`${this.ns}${ENTRIES_CONTAINER}:registered`, function() {
+            if (!A.one("#" + this.ns + this.get('containerId'))) {
+              Liferay.once(`${this.ns}${this.get('containerId')}:registered`, function() {
                 window.setTimeout(() => instance.initializer(), 50);
               });
               return;
             }
-            var searchContainerElement = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER);
-            var entriesContainer = A.one("#" + this.ns + ENTRIES_CONTAINER);
+            var searchContainerElement = A.one("#" + this.ns + this.get('searchContainerId'));
+            var entriesContainer = A.one("#" + this.ns + this.get('containerId'));
             searchContainerElement.append(
               '<div id="' +
                 previewBoundingBoxId +
@@ -198,7 +198,7 @@ YUI.add(
             // loading mask when moving multiple entries
             this.loadingMaskMove = new A.LoadingMask({
               "strings.loading": "Moving Files",
-              target: A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER),
+              target: A.one("#" + this.ns + this.get('searchContainerId')),
             });
   
             Liferay.fire('rl-content-tree-view:initialized');
@@ -760,7 +760,7 @@ YUI.add(
   
           _resetCheckedArray: function () {
             var self = this;
-            var tree = A.one("#" + this.ns + ENTRIES_SEARCH_CONTAINER);
+            var tree = A.one("#" + this.ns + this.get('searchContainerId'));
             this.checkedArray.forEach(function (id) {
               var childDOM = tree.one("#" + id);
               childDOM.getData(TREE_NODE).uncheck();
@@ -1103,8 +1103,12 @@ YUI.add(
             defaultDocumentImagePath: {
               value: null,
             },
-            searchContainer: {
-              value: null,
+
+            containerId: {
+              value: ENTRIES_CONTAINER
+            },
+            searchContainerId: {
+              value: ENTRIES_SEARCH_CONTAINER
             },
           },
         }
@@ -1120,6 +1124,7 @@ YUI.add(
         "liferay-preview",
         "aui-loading-mask-deprecated",
         "async-queue",
+        "node-event-simulate"
       ],
     }
   );
