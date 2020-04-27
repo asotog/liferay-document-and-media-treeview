@@ -4,7 +4,7 @@
 
 <%
 int rivetts = 2020042401; // avoid caching on css and js 2
-String MODULE_PATH = "/o/document-library-web";
+String MODULE_PATH = "/o/tree-view-frontend";
 
 long repositoryId = GetterUtil.getLong((String)request.getAttribute("view.jsp-repositoryId"));
 long folderId = GetterUtil.getLong((String)request.getAttribute("view.jsp-folderId"));
@@ -63,7 +63,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
                 combine : Liferay.AUI.getCombine(),
                 modules : {
                     'rl-content-tree-view' : {
-                        path : 'rl-content-tree-view.js',
+                        path : 'main.js',
                         requires : []
 					}
                 },
@@ -74,7 +74,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 })();
 </script>
 <style type="text/css">
-@import url("<%= MODULE_PATH %>/css/rl-content-tree-view.css?t=<%= rivetts %>");
+@import url("<%= MODULE_PATH %>/css/main.css?t=<%= rivetts %>");
 .has-tree-view  .searchcontainer-content .splitter.splitter-spaced,
 .has-tree-view  .searchcontainer-content > ul {
     display: none !important;
