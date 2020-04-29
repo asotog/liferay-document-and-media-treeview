@@ -15,6 +15,7 @@
 	treeViewURL.setParameter("mvcRenderCommandName", "/document_library/view");
 	treeViewURL.setParameter("folderId", String.valueOf(folderId));
 	treeViewURL.setParameter("navigation", "home");
+	treeViewURL.setParameter("deltaEntry", "200");
 	viewTypeItem.setHref(treeViewURL, "displayStyle", TREE_VIEW);
 	if (Validator.isNotNull(_selectedType)) {
 		if (Objects.equals(_selectedType, TREE_VIEW)) {

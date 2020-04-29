@@ -55,6 +55,7 @@ if (Validator.isNotNull(title)) {
 	String navigation = ParamUtil.getString(request, "navigation", "home");
 	treeViewURL.setParameter("folderId", String.valueOf(folderId));
 	treeViewURL.setParameter("navigation", "home");
+	treeViewURL.setParameter("delta", "200");
 	viewTypeItem.setHref(treeViewURL, "displayStyle", TREE_VIEW);
 	if (Validator.isNotNull(_selectedType)) {
 		if (Objects.equals(_selectedType, TREE_VIEW)) {
