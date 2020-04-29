@@ -49,7 +49,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 <script id="<portlet:namespace />item-selector-template" type="text/x-handlebars-template">
 	<c:set var="rowIds" value="<%= RowChecker.ROW_IDS %>" />
 	<li data-selectable="true" data-actions="deleteEntries,move,checkout,editTags,download">
-		<aui:input cssClass="overlay entry-selector" label="" value="{{rowCheckerId}}" name="{{rowCheckerName}}" type="checkbox"  />
+		<aui:input cssClass="overlay entry-selector" label="" value="{{rowCheckerId}}" id="{{rowCheckerName}}" name="{{rowCheckerName}}" type="checkbox"  />
 	</li>
 </script>
 <script>
