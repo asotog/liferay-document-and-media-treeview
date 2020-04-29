@@ -1,5 +1,4 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.RowChecker" %>
-<%@ page import="com.liferay.document.library.kernel.model.DLFileShortcut" %>
 <%@ include file="/document_library/init.jsp" %>
 
 <%
@@ -130,7 +129,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			    for (Object item: items){
 			         
 			        FileEntry fileEntry = null;
-			        DLFileShortcut fileShortcut = null;
+			        FileShortcut fileShortcut = null;
 			        String rowCheckerName = "";
 			        String rowCheckerId = "";
 			        boolean isShortcut = false;
@@ -145,11 +144,11 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 				       
 			        }
 			        else {		            
-			            fileShortcut = (DLFileShortcut)item;
+			            fileShortcut = (FileShortcut)item;
 			            fileShortcut = fileShortcut.toEscapedModel();
 			        	fileEntry = DLAppLocalServiceUtil.getFileEntry(fileShortcut.getToFileEntryId());
 			        	fileEntry = fileEntry.toEscapedModel();
-			        	rowCheckerName = DLFileShortcut.class.getSimpleName();
+			        	rowCheckerName = FileShortcut.class.getSimpleName();
 			        	rowCheckerId = String.valueOf(fileShortcut.getFileShortcutId());
 			        	isShortcut = true;
 			        	parentFolderId = fileShortcut.getFolderId();
@@ -169,7 +168,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			        	rowCheckerId: '<%= String.valueOf(rowCheckerId) %>',
 			        	rowCheckerName: '<%= rowCheckerName %>',
 			        	parentFolderId: '<%= parentFolderId %>',
-			        	previewURL:'<%= DLUtil.getThumbnailSrc(fileEntry, latestFileVersion, fileShortcut, themeDisplay) %>',
+			        	previewURL:'<%= DLURLHelperUtil.getThumbnailSrc(fileEntry, latestFileVersion, themeDisplay) %>',
 			        	viewURL: '<%= tempRowURL %>'  	
 			        });
 			        <%

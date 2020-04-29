@@ -16,7 +16,6 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 --%>
-<%@ page import="com.liferay.document.library.kernel.model.DLFileShortcut" %>
 <%@ include file="/document_library/init.jsp" %>
 
 <%
@@ -28,7 +27,7 @@ if ((user.getUserId() == fileEntry.getUserId()) || permissionChecker.isCompanyAd
 	latestFileVersion = fileEntry.getLatestFileVersion();
 }
 
-DLFileShortcut fileShortcut = (DLFileShortcut)request.getAttribute("view_entries.jsp-fileShortcut");
+FileShortcut fileShortcut = (FileShortcut)request.getAttribute("view_entries.jsp-fileShortcut");
 PortletURL rowURL = liferayPortletResponse.createRenderURL();
 
 rowURL.setParameter("mvcRenderCommandName", "/document_library/view_file_entry");
@@ -41,7 +40,7 @@ boolean isFileShortcut = false;
 long parentFolderId = fileEntry.getFolderId();
 
 if (fileShortcut != null) {
-	rowCheckerName = DLFileShortcut.class.getSimpleName();
+	rowCheckerName = FileShortcut.class.getSimpleName();
 	rowCheckerId = fileShortcut.getFileShortcutId();
 	isFileShortcut = true;
 	parentFolderId = fileShortcut.getFolderId();
@@ -57,7 +56,7 @@ if (fileShortcut != null) {
 		rowCheckerId: '<%= String.valueOf(rowCheckerId) %>',
 		rowCheckerName: 'rowIds<%= rowCheckerName %>',
 		parentFolderId: '<%= parentFolderId %>',
-		previewURL:'<%= DLUtil.getThumbnailSrc(fileEntry, latestFileVersion, fileShortcut, themeDisplay) %>',
+		previewURL:'<%= DLURLHelperUtil.getThumbnailSrc(fileEntry, latestFileVersion, themeDisplay) %>',
 		viewURL: '<%= rowURL.toString() %>'
 	});
 </aui:script>

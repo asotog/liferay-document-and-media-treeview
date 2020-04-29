@@ -47,8 +47,6 @@ YUI.add(
       var TPT_ENCODED_DELIM_CLOSE = "&#x7d;&#x7d;";
       var TPL_PREVIEW_NODE =
         '<img src="{previewFileURL}" id="{imgId}" class="treePreviewImg"/>';
-      var TPL_SHORTCUT_PREVIEW_NODE =
-        '<img src="{shortcutImageURL}" class="shortcut-icon img-polaroid" alt="Shortcut">';
       var WORKFLOW_STATUS_ANY = -1;
       var QUERY_ALL = -1;
       var REG_EXP_GLOBAL = "g";
@@ -74,7 +72,6 @@ YUI.add(
           defaultDocumentImagePath: null,
           defaultArticleImage: null,
           viewPageBaseURL: null,
-          shortcutNode: null,
   
           initializer: function () {
             var instance = this;
@@ -129,10 +126,6 @@ YUI.add(
   
             this.hiddenFieldsBox = searchContainerElement.one('.hidden-bounding-box').hide();
             this.previewBoundingBox = searchContainerElement.one('.rl-tree-preview');
-  
-            this.shortcutNode = A.Lang.sub(TPL_SHORTCUT_PREVIEW_NODE, {
-              shortcutImageURL: shortcutImageURL,
-            });
   
             this.contentTree = new A.TreeViewDD({
               boundingBox: '#' + boundingBoxId,
@@ -604,9 +597,6 @@ YUI.add(
                 previewImgNode = this._createPreview(treeNode);
               }
               this.previewBoundingBox.append(previewImgNode);
-              if (treeNode.get(NODE_ATTR_SHORTCUT)) {
-                this.previewBoundingBox.append(this.shortcutNode);
-              }
             }
           },
   
@@ -836,7 +826,7 @@ YUI.add(
                 : false;
   
             if (newNodeConfig.shortcut) {
-              label = Liferay.Language.get(SHORTCUT_LABEL) + label;
+              label = label + " (shortcut)";
               nodeId = newNodeConfig.rowCheckerId;
             }
   
@@ -868,7 +858,7 @@ YUI.add(
             });
   
             // only add the node if it is not already there
-            if (!match) {
+            if (!match || newNodeConfig.shortcut) {
               parentNode.appendChild(newNode);
             }
   
