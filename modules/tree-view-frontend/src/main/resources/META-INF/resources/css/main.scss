@@ -18,11 +18,6 @@
 	max-height: 300px;
 }
 
-.aui .icon-tree{
-	background-image: url(../../icons/rl_tree.png);
-	height: 14px;
-    width: 14px;
-}
 .rl-tree-preview .icon-plus, .rl-tree-preview .icon-minus{
 	padding: 7px;
 }
@@ -38,8 +33,19 @@
     width: 60%;
 }
 
+
+
 /* hide toolbars that does not belong to tree feature */
 .treeview-toolbar .management-bar > div ul:nth-child(1),
 .treeview-toolbar .management-bar > div .navbar-form {
     visibility: hidden;    
+}
+
+.tree-view {
+    .tree-node-content .tree-hitarea {
+        font-size: 20px;
+    }
+    .tree-node-leaf {
+        margin-left: 20px;
+    }
 }
