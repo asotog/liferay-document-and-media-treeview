@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.document.library.kernel.model.DLFileShortcut;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
@@ -100,8 +101,8 @@ public class EnhancedDLAppServiceImpl extends EnhancedDLAppServiceBaseImpl {
 				dlFileEntry.setPreviewFileURL(getThumbnailURL(fileEntry, null, dlFileEntry));
 				results.add(dlFileEntry);
 			}
-			if (o instanceof DLFileShortcut) {
-				DLFileShortcut dLFileShortcut = (DLFileShortcut) o;
+			if (o instanceof FileShortcut) {
+				FileShortcut dLFileShortcut = (FileShortcut) o;
 				FileEntry fileEntry = DLAppServiceUtil.getFileEntry(dLFileShortcut.getToFileEntryId());
 				DLFileEntry dlFileEntry = new DLFileEntry(fileEntry);
 				dlFileEntry
@@ -118,7 +119,7 @@ public class EnhancedDLAppServiceImpl extends EnhancedDLAppServiceBaseImpl {
 		return results;
 	}
 
-	private String getThumbnailURL(final FileEntry fileEntry, final DLFileShortcut fileShortcut,
+	private String getThumbnailURL(final FileEntry fileEntry, final FileShortcut fileShortcut,
 		final DLFileEntry dlFileEntry) {
 		ThemeDisplay themeDisplay = null;
         String thumbnailSrc = null;

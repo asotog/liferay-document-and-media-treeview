@@ -1,4 +1,5 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.RowChecker" %>
+<%@ page import="com.liferay.document.library.kernel.model.DLFileShortcut" %>
 <%@ include file="/document_library/init.jsp" %>
 
 <%
@@ -115,7 +116,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 						label: '<%= cFolder.getName() %>',
 						showCheckbox: '<%= DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.DELETE) || DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.UPDATE) %>',
 						rowCheckerId: '<%= String.valueOf(cFolder.getFolderId()) %>',
-						rowCheckerName: '<%= Folder.class.getSimpleName() %>',
+						rowCheckerName: 'rowIds<%= Folder.class.getSimpleName() %>',
 						parentFolderId: '<%= cFolder.getParentFolderId() %>',
 						expanded : <%= isAncestor %>,
 	   			    	fullLoaded : <%= isAncestor %>
@@ -148,7 +149,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			            fileShortcut = fileShortcut.toEscapedModel();
 			        	fileEntry = DLAppLocalServiceUtil.getFileEntry(fileShortcut.getToFileEntryId());
 			        	fileEntry = fileEntry.toEscapedModel();
-			        	rowCheckerName = FileShortcut.class.getSimpleName();
+			        	rowCheckerName = DLFileShortcut.class.getSimpleName();
 			        	rowCheckerId = String.valueOf(fileShortcut.getFileShortcutId());
 			        	isShortcut = true;
 			        	parentFolderId = fileShortcut.getFolderId();
@@ -166,7 +167,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			        	shortcut: <%= isShortcut %>,
 			        	showCheckbox: '<%= DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.DELETE) || DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.UPDATE) %>',
 			        	rowCheckerId: '<%= String.valueOf(rowCheckerId) %>',
-			        	rowCheckerName: '<%= rowCheckerName %>',
+			        	rowCheckerName: 'rowIds<%= rowCheckerName %>',
 			        	parentFolderId: '<%= parentFolderId %>',
 			        	previewURL:'<%= DLURLHelperUtil.getThumbnailSrc(fileEntry, latestFileVersion, themeDisplay) %>',
 			        	viewURL: '<%= tempRowURL %>'  	

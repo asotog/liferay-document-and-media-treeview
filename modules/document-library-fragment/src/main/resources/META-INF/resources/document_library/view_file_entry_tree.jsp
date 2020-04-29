@@ -16,6 +16,7 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 --%>
+<%@ page import="com.liferay.document.library.kernel.model.DLFileShortcut" %>
 <%@ include file="/document_library/init.jsp" %>
 
 <%
@@ -40,7 +41,7 @@ boolean isFileShortcut = false;
 long parentFolderId = fileEntry.getFolderId();
 
 if (fileShortcut != null) {
-	rowCheckerName = FileShortcut.class.getSimpleName();
+	rowCheckerName = DLFileShortcut.class.getSimpleName();
 	rowCheckerId = fileShortcut.getFileShortcutId();
 	isFileShortcut = true;
 	parentFolderId = fileShortcut.getFolderId();
