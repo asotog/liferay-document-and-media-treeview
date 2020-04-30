@@ -4,7 +4,7 @@
 
 <%
 	ViewTypeItemList viewsList = dlAdminManagementToolbarDisplayContext.getViewTypes();
-	String _selectedType = ParamUtil.getString(request, "displayStyle");
+	String _selectedType = GetterUtil.getString((String)request.getAttribute("view.jsp-displayStyle"));
 	String TREE_VIEW = "treeView";
 	ViewTypeItem viewTypeItem = new ViewTypeItem();
 	viewTypeItem.setIcon("pages-tree");

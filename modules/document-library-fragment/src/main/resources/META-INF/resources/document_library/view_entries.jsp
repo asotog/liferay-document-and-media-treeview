@@ -27,8 +27,7 @@ long repositoryId = GetterUtil.getLong((String)request.getAttribute("view.jsp-re
 
 DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(dlRequestHelper);
 
-String displayStyle = GetterUtil.getString((String)request.getAttribute("view.jsp-displayStyle")); //
-displayStyle = Validator.isNotNull(ParamUtil.getString(request, "displayStyle")) ? ParamUtil.getString(request, "displayStyle") : displayStyle;
+String displayStyle = GetterUtil.getString((String)request.getAttribute("view.jsp-displayStyle"));
 
 PortletURL portletURL = liferayPortletResponse.createRenderURL();
 

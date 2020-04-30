@@ -3,7 +3,7 @@
 <%@ include file="/init.jsp" %> 
 
 <%
-int rivetts = 2020042801; // avoid caching on css and js 2
+int rivetts = 2020042901; // avoid caching on css and js 2
 String MODULE_PATH = "/o/tree-view-frontend";
 
 // Base URL for view file entry

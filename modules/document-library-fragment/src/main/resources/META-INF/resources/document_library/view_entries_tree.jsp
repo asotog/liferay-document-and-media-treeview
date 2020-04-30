@@ -3,7 +3,7 @@
 <%@ include file="/document_library/init.jsp" %>
 
 <%
-int rivetts = 2020042401; // avoid caching on css and js 2
+int rivetts = 2020042901; // avoid caching on css and js 2
 String MODULE_PATH = "/o/tree-view-frontend";
 
 long repositoryId = GetterUtil.getLong((String)request.getAttribute("view.jsp-repositoryId"));
