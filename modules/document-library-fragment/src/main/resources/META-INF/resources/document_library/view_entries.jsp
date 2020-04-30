@@ -43,6 +43,15 @@ entriesChecker.setCssClass("entry-selector");
 
 entriesChecker.setRememberCheckBoxStateURLRegex(dlAdminDisplayContext.getRememberCheckBoxStateURLRegex());
 
+// BEGIN: Rivet Logic
+String TREE_VIEW = "treeView";
+SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
+String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view d-none" : "";
+if (displayStyle.equals(TREE_VIEW)) {
+	dlSearchContainer.setRowChecker(entriesChecker);
+}
+// END: Rivet Logic
+
 EntriesMover entriesMover = new EntriesMover(dlTrashUtil.isTrashEnabled(scopeGroupId, repositoryId));
 
 String[] entryColumns = dlPortletInstanceSettingsHelper.getEntryColumns();
@@ -62,11 +71,8 @@ if (portletTitleBasedNavigation && (folderId != DLFolderConstants.DEFAULT_PARENT
 	renderResponse.setTitle(folder.getName());
 
 }
-// BEGIN: Rivet Logic
-String TREE_VIEW = "treeView";
-SearchContainer dlSearchContainer = dlAdminDisplayContext.getSearchContainer();
-String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view d-none" : "";
 %>
+<%-- BEGIN Rivet Logic --%>
 <c:choose>
 	<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
 		<liferay-util:include page="/document_library/view_entries_tree.jsp" servletContext="<%= application %>" />

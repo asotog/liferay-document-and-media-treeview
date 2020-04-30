@@ -6,6 +6,7 @@
 	ViewTypeItemList viewsList = dlAdminManagementToolbarDisplayContext.getViewTypes();
 	String _selectedType = GetterUtil.getString((String)request.getAttribute("view.jsp-displayStyle"));
 	String TREE_VIEW = "treeView";
+	boolean isTreeView = _selectedType.equals(TREE_VIEW);
 	ViewTypeItem viewTypeItem = new ViewTypeItem();
 	viewTypeItem.setIcon("pages-tree");
 	viewTypeItem.setLabel("Tree");
@@ -25,7 +26,7 @@
 	}
 
 	viewsList.add(viewTypeItem);
-	String treeViewToolBarCss = _selectedType.equals(TREE_VIEW) ? "treeview-toolbar" : "";
+	String treeViewToolBarCss = isTreeView ? "treeview-toolbar" : "";
 %>
 
 <div class="<%= treeViewToolBarCss %>">
@@ -35,11 +36,11 @@
 		componentId="<%= dlAdminManagementToolbarDisplayContext.getComponentId() %>"
 		creationMenu="<%= dlAdminManagementToolbarDisplayContext.getCreationMenu() %>"
 		defaultEventHandler='<%= renderResponse.getNamespace() + "DocumentLibrary" %>'
-		disabled="<%= dlAdminManagementToolbarDisplayContext.isDisabled() %>"
+		disabled="<%= !isTreeView && dlAdminManagementToolbarDisplayContext.isDisabled() %>"
 		filterDropdownItems="<%= dlAdminManagementToolbarDisplayContext.getFilterDropdownItems() %>"
 		filterLabelItems="<%= dlAdminManagementToolbarDisplayContext.getFilterLabelItems() %>"
 		infoPanelId="infoPanelId"
-		itemsTotal="<%= dlAdminManagementToolbarDisplayContext.getTotalItems() %>"
+		itemsTotal="<%= isTreeView && dlAdminManagementToolbarDisplayContext.getTotalItems() == 0 ? 1 : dlAdminManagementToolbarDisplayContext.getTotalItems() %>"
 		searchActionURL="<%= String.valueOf(dlAdminManagementToolbarDisplayContext.getSearchURL()) %>"
 		searchContainerId="entries"
 		selectable="<%= dlAdminManagementToolbarDisplayContext.isSelectable() %>"

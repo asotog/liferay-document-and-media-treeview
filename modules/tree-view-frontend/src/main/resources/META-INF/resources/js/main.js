@@ -26,6 +26,7 @@ YUI.add(
     var ENTRIES_CONTAINER = "entries";
     var ENTRIES_SEARCH_CONTAINER = "entriesSearchContainer";
     var BOUNDING_BOX = "boundingBox";
+    var EMPTY_MESSAGE_BOX = "entriesEmptyResultsMessage";
     var TREE_NODE = "tree-node";
     var NODE_SELECTOR = "." + TREE_NODE;
     var NODE_CHECKBOX_SELECTOR = ".tree-node-checkbox-container";
@@ -207,6 +208,8 @@ YUI.add(
 
           // not working properly with senna spa routing, so let's disable it for this form
           boundingBox.ancestor('form').setAttribute('data-senna-off', true);
+          boundingBox.ancestor('.lfr-search-container-wrapper').removeClass('hide'); // if no results we show it anyway, overwrite default search container behaviour
+          A.one("#" + this.ns + this.get('emptySearchContainerId')).addClass('hide'); // same as previous line
 
           Liferay.fire("rl-content-tree-view:initialized");
 
@@ -1115,6 +1118,9 @@ YUI.add(
           searchContainerId: {
             value: ENTRIES_SEARCH_CONTAINER,
           },
+          emptySearchContainerId: {
+            value: EMPTY_MESSAGE_BOX
+          }
         },
       }
     );
