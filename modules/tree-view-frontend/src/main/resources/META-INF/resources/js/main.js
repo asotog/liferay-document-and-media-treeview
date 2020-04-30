@@ -570,10 +570,7 @@ YUI.add(
 
         _mouseOverHandler: function (event) {
           event.stopPropagation();
-          window.setTimeout(
-            () => this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide(),
-            50
-          );
+          this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
           var treeNode = this.contentTree.getNodeById(
             event.currentTarget.get(NODE_ATTR_ID)
           );
@@ -897,6 +894,8 @@ YUI.add(
             NODE_SELECTOR
           );
           this.contentTree.bindUI();
+
+          boundingBox.all(NODE_SELECTOR).setAttribute('draggable', true);
         },
 
         _addProcessCheckbox: function (newNodeConfig) {
