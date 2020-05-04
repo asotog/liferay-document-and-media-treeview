@@ -54,6 +54,10 @@
     display: none;
 }
 
+.tree-drag-helper {
+    z-index: 1 !important;
+}
+
 .tree-drag-helper-content {
     margin: 0 0 0 60px;
 }

@@ -268,7 +268,7 @@ YUI.add(
           var self = this;
           event.target.after("dragNodeChange", function () {
             if (!self.mouseIsDown) {
-              self.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
+              self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
             }
           });
 
@@ -573,7 +573,7 @@ YUI.add(
 
         _mouseOverHandler: function (event) {
           event.stopPropagation();
-          this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
+          this.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
           var treeNode = this.contentTree.getNodeById(
             event.currentTarget.get(NODE_ATTR_ID)
           );
@@ -646,7 +646,7 @@ YUI.add(
             }
           }
 
-          this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
+          this.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
         },
 
         _createPreview: function (treeNode) {
@@ -969,7 +969,7 @@ YUI.add(
 
               treeNode.set(NODE_ATTR_FULL_LOADED, true);
               treeNode.expand();
-              self.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
+              self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
             }
           );
         },
@@ -1026,7 +1026,7 @@ YUI.add(
 
               treeNode.set(NODE_ATTR_FULL_LOADED, true);
               treeNode.expand();
-              self.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
+              self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
             }
           );
         },
