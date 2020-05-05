@@ -55,7 +55,8 @@ YUI.add(
     var TOOLTIP_HELPER_PROPERTY = "helper";
     var TOOLTIP_HELPER_LABEL = ".tree-drag-helper-label";
     var APPEND = "append";
-
+    var originalSubmitForm = null;
+  
     A.Rivet.ContentTreeView = A.Base.create(
       "rl-content-tree-view",
       A.Base,
@@ -180,6 +181,20 @@ YUI.add(
             NODE_SELECTOR
           );
 
+          // set redirect url folderId param to be always 0, that way any action made will redirected to home
+          originalSubmitForm = Liferay.Util.submitForm;
+          Liferay.Util.submitForm = (form) => {
+            const formNode = boundingBox.ancestor('form');
+            const redirectInput = formNode.one(`#${this.ns}redirect`);
+            const redirectURL = new URL(redirectInput.get('value'));
+            const { searchParams } = redirectURL;
+            searchParams.set(`${this.ns}folderId`, '0');
+            redirectURL.search = searchParams.toString();
+            redirectInput.set('value', redirectURL.toString());
+
+            originalSubmitForm(form);
+          };
+        
           //template
           var itemSelectorTemplate = A.one(
             "#" + this.ns + "item-selector-template"
@@ -218,6 +233,7 @@ YUI.add(
             entriesContainer.all(`#${boundingBoxId}`).remove();
             searchContainerElement.all(`#${previewBoundingBoxId}`).remove();
             searchContainerElement.all(`#${hiddenBoundingBoxId}`).remove();
+            Liferay.Util.submitForm = originalSubmitForm;
           });
         },
 

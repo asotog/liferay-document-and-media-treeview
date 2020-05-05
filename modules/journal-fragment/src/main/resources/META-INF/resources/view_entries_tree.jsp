@@ -3,7 +3,7 @@
 <%@ include file="/init.jsp" %> 
 
 <%
-int rivetts = 20200504; // avoid caching on css and js 2
+int rivetts = 2020042901; // avoid caching on css and js 2
 String MODULE_PATH = "/o/tree-view-frontend";
 
 // Base URL for view file entry
@@ -108,13 +108,12 @@ if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			        boolean isAncestor = false;
 				    if ( (cFolder.getFolderId() == currFolderId ) || (ancestorIds.contains(cFolder.getFolderId())) ){
 				       isAncestor = true;
-					}
-					boolean showCheck = currFolderId != cFolder.getFolderId();
+				    }
 		        	%>
 			    	<portlet:namespace />treeView.addContentFolder({
 						id: '<%= String.valueOf(cFolder.getFolderId()) %>',
 						label: '<%= cFolder.getName() %>',
-						showCheckbox: <%= showCheck && (JournalFolderPermission.contains(permissionChecker, cFolder, ActionKeys.DELETE) || JournalFolderPermission.contains(permissionChecker, cFolder, ActionKeys.UPDATE)) %>,
+						showCheckbox: '<%= JournalFolderPermission.contains(permissionChecker, cFolder, ActionKeys.DELETE) || JournalFolderPermission.contains(permissionChecker, cFolder, ActionKeys.UPDATE) %>',
 						rowCheckerId: '<%= String.valueOf(cFolder.getFolderId()) %>',
 						rowCheckerName: '<%= JournalFolder.class.getSimpleName() %>',
 						parentFolderId: '<%= cFolder.getParentFolderId() %>',
