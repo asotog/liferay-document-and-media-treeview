@@ -3,7 +3,7 @@
 <%@ include file="/document_library/init.jsp" %>
 
 <%
-int rivetts = 2020042901; // avoid caching on css and js 2
+int rivetts = 20200504; // avoid caching on css and js 2
 String MODULE_PATH = "/o/tree-view-frontend";
 
 long repositoryId = GetterUtil.getLong((String)request.getAttribute("view.jsp-repositoryId"));
@@ -109,12 +109,13 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			        boolean isAncestor = false;
 				    if ( (cFolder.getFolderId() == currFolderId ) || (ancestorIds.contains(cFolder.getFolderId())) ){
 				       isAncestor = true;
-				    }
-		        	%>
+					}
+					boolean showCheck = currFolderId != cFolder.getFolderId();
+					%>
 			    	<portlet:namespace />treeView.addContentFolder({
 						id: '<%= cFolder.getFolderId() %>',
 						label: '<%= cFolder.getName() %>',
-						showCheckbox: '<%= DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.DELETE) || DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.UPDATE) %>',
+						showCheckbox: <%= showCheck && (DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.DELETE) || DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.UPDATE)) %>,
 						rowCheckerId: '<%= String.valueOf(cFolder.getFolderId()) %>',
 						rowCheckerName: 'rowIds<%= Folder.class.getSimpleName() %>',
 						parentFolderId: '<%= cFolder.getParentFolderId() %>',
