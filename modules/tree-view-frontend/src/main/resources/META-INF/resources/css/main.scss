@@ -55,7 +55,7 @@
 }
 
 .tree-drag-helper {
-    z-index: 1 !important;
+    left: -1000px; // hide it if no position is provided, there is an issue related to liferay alloy ui version compared to latest version
 }
 
 .tree-drag-helper-content {
