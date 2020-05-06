@@ -186,11 +186,13 @@ YUI.add(
           Liferay.Util.submitForm = (form) => {
             const formNode = boundingBox.ancestor('form');
             const redirectInput = formNode.one(`#${this.ns}redirect`);
+            const folderIdInput = formNode.one(`#${this.ns}folderId`);
             const redirectURL = new URL(redirectInput.get('value'));
             const { searchParams } = redirectURL;
             searchParams.set(`${this.ns}folderId`, '0');
             redirectURL.search = searchParams.toString();
             redirectInput.set('value', redirectURL.toString());
+            folderIdInput.set('value', '0');
 
             originalSubmitForm(form);
           };
@@ -687,7 +689,7 @@ YUI.add(
           this._toggleCheckedArray(selectedNodeId);
 
           // trigger the event to simulate the click on the checkbox (toggle toolbar additional options).
-          this._toggleCheckBox(selectedNodeId);
+          this._toggleCheckBox(selectedNodeId, treeNode.isChecked());
 
           // if the clicked checkbox is a folder
           if (this._isFolder(treeNode)) {
@@ -700,6 +702,7 @@ YUI.add(
 
         _toggleParent: function (treeNode) {
           // get the parent node
+          var self = this;
           var parentNode = treeNode.get(PARENT_NODE);
           // when the entry is unchecked, all its parents must be unchecked
           if (
@@ -716,6 +719,17 @@ YUI.add(
               parentNode.uncheck();
               this._toggleCheckBox(parentNodeId);
               this._toggleCheckedArray(parentNodeId);
+              
+              // verify if should activate a checked checkbox
+              const children = parentNode.getChildren();
+              if (children) {
+                children.forEach(function (child) {
+                  if (child.isChecked()) {
+                    self._toggleCheckBox(child.get(NODE_ATTR_ID), child.isChecked());
+                  }
+                });
+              }
+
               // repeat with all parents
               this._toggleParent(parentNode);
             }
@@ -741,7 +755,7 @@ YUI.add(
               self._setElementCheckedArray(nodeChildId, isParentChecked);
 
               // checkbox state toggle
-              self._toggleCheckBox(nodeChildId, isParentChecked);
+              self._toggleCheckBox(nodeChildId, isParentChecked, true);
 
               // recursively toggle children
               var childArr = child.getChildren();
@@ -752,18 +766,28 @@ YUI.add(
           }
         },
 
-        _toggleCheckBox: function (nodeId, isParentChecked) {
+        _toggleCheckBox: function (nodeId, isChecked, fromParent) {
           var relatedCheckbox = this.hiddenFieldsBox.one(
             "[type=checkbox][value=" + nodeId + "]"
           );
           if (relatedCheckbox !== null) {
+            if (fromParent && isChecked) { // if parent is checking but child is checked: should uncheck child
+              if (relatedCheckbox.attr("checked")) {
+                relatedCheckbox.simulate("click");
+              }
+            }
+            if (relatedCheckbox.attr("checked") === isChecked) { // do nothing  if same value between hidden and tree check
+              return;
+            }
             // already checked
             if (relatedCheckbox.attr("checked")) {
-              if (!isParentChecked) {
+              if (!isChecked) {
                 relatedCheckbox.simulate("click");
               }
             } else {
-              relatedCheckbox.simulate("click");
+              if (!fromParent) {
+                relatedCheckbox.simulate("click");
+              }
             }
           }
         },
