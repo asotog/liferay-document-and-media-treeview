@@ -17,7 +17,7 @@ viewFileEntryURL.setParameter("mvcRenderCommandName", "/document_library/view_fi
 viewFileEntryURL.setParameter("redirect", HttpUtil.removeParameter(currentURL, liferayPortletResponse.getNamespace() + "ajax"));
 
 List<Long> ancestorIds = new ArrayList<Long>();
-
+int TREE_PAGE_SIZE = 5;
 // Root will be always the same (home)
 
 long treeFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
@@ -86,8 +86,10 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 		searchContainer: Liferay.SearchContainer.get("<portlet:namespace />entries"),
         treeTarget: A.Rivet.TreeTargetDL,
         repositoryId: '<%= repositoryId %>',
-        scopeGroupId: '<%= scopeGroupId %>',
-        rootFolderId:'<%= treeFolderId %>',
+		scopeGroupId: '<%= scopeGroupId %>',
+		pageSize: <%=TREE_PAGE_SIZE %>,
+		rootFolderId:'<%= treeFolderId %>',
+		currentFolderId: '<%= currFolderId %>',
         rootFolderLabel: '<%= treeFolderTitle %>',
         checkAllId: '<%= RowChecker.ALL_ROW_IDS %>',
         viewPageBaseURL: '<%= viewFileEntryURL %>',
@@ -124,7 +126,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			    }
 			    
 			    // Files
-			    List<Object> items = DLAppServiceUtil.getFileEntriesAndFileShortcuts(repositoryId, ancestorId, WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS, QueryUtil.ALL_POS);	
+			    List<Object> items = DLAppServiceUtil.getFileEntriesAndFileShortcuts(repositoryId, ancestorId, WorkflowConstants.STATUS_ANY, 0, TREE_PAGE_SIZE);	
 			    
 			    for (Object item: items){
 			         
@@ -176,4 +178,5 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 			}
 		}
 	%>
+	<portlet:namespace />treeView.loadRootFolderNodes();
 </aui:script>

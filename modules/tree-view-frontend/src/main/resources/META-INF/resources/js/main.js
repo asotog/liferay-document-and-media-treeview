@@ -22,7 +22,6 @@ YUI.add(
 
     A.Rivet.TreeTargetJournal = "journal";
     A.Rivet.TreeTargetDL = "documentLibrary";
-
     var ENTRIES_CONTAINER = "entries";
     var ENTRIES_SEARCH_CONTAINER = "entriesSearchContainer";
     var BOUNDING_BOX = "boundingBox";
@@ -237,6 +236,7 @@ YUI.add(
             searchContainerElement.all(`#${hiddenBoundingBoxId}`).remove();
             Liferay.Util.submitForm = originalSubmitForm;
           });
+          
         },
 
         addContentFolder: function (newNodeConfig, parentNode) {
@@ -261,6 +261,19 @@ YUI.add(
           newNodeConfig.expanded = false;
           newNodeConfig.fullLoaded = true;
           this._addContentNode(newNodeConfig, parentNode, false);
+        },
+
+
+        loadRootFolderNodes: function() {
+          var self = this;
+          this.getFoldersAndFileEntriesAndFileShortcuts(
+            this.get("repositoryId"),
+            this.get("currentFolderId"),
+            0,
+            this.get('pageSize'),
+            function(entries) {
+              self.renderDLChildren(entries, { parentFolderId: self.get("currentFolderId") });
+            });
         },
 
         _getTargetAttributes: function () {
@@ -954,64 +967,79 @@ YUI.add(
             this._getWCChildren(treeNode, instance);
           }
         },
+        
+        getFoldersAndFileEntriesAndFileShortcuts(repositoryId, folderId, start, end, callback) {
+          Liferay.Service(
+            "/rivetlogic_treeview.enhanceddlapp/get-folders-and-file-entries-and-file-shortcuts",
+            {
+              repositoryId: parseInt(repositoryId),
+              folderId: folderId ? parseInt(folderId) : 0,
+              status: WORKFLOW_STATUS_ANY,
+              includeMountFolders: true,
+              start: start,
+              end: end
+            },
+            callback
+          );
+        },
+        
+        renderDLChildren: function(entries, options) {
+          var instance = this;
+          A.each(entries, function (item) {
+            var enableCheckbox =
+              item.deletePermission || item.updatePermission;
+            //if it is a file entry
+            if (item.fileEntryId !== undefined) {
+              var documentImageURL = instance._getDocumentImageURL(item);
+              instance.addContentEntry(
+                {
+                  id: item.fileEntryId.toString(),
+                  label: item.title,
+                  shortcut: item.shortcut,
+                  showCheckbox: enableCheckbox,
+                  rowCheckerId: item.rowCheckerId,
+                  parentFolderId: options.parentFolderId,
+                  rowCheckerName: `rowIds${item.rowCheckerName}`,
+                  expanded: false,
+                  fullLoaded: true,
+                  previewURL: documentImageURL,
+                },
+                options.treeNode
+              );
+            }
+            //If it is a folder
+            else {
+              instance.addContentFolder(
+                {
+                  id: item.folderId.toString(),
+                  label: item.name,
+                  showCheckbox: enableCheckbox,
+                  rowCheckerId: item.rowCheckerId,
+                  rowCheckerName: `rowIds${item.rowCheckerName}`,
+                  expanded: false,
+                  parentFolderId: options.parentFolderId,
+                  fullLoaded: false,
+                },
+                options.treeNode
+              );
+            }
+          });
+        },
 
         _getDLChildren: function (treeNode, instance) {
           var self = this;
           // Get folders children of this folder
-          Liferay.Service(
-            "/rivetlogic_treeview.enhanceddlapp/get-folders-and-file-entries-and-file-shortcuts",
-            {
-              repositoryId: instance.repository,
-              folderId: treeNode.get(NODE_ATTR_ID),
-              status: WORKFLOW_STATUS_ANY,
-              includeMountFolders: true,
-              start: QUERY_ALL,
-              end: QUERY_ALL,
-            },
-            function (entries) {
-              A.each(entries, function (item, index, collection) {
-                var enableCheckbox =
-                  item.deletePermission || item.updatePermission;
-                //if it is a file entry
-                if (item.fileEntryId !== undefined) {
-                  var documentImageURL = instance._getDocumentImageURL(item);
-                  instance.addContentEntry(
-                    {
-                      id: item.fileEntryId.toString(),
-                      label: item.title,
-                      shortcut: item.shortcut,
-                      showCheckbox: enableCheckbox,
-                      rowCheckerId: item.rowCheckerId,
-                      rowCheckerName: `rowIds${item.rowCheckerName}`,
-                      expanded: false,
-                      fullLoaded: true,
-                      previewURL: documentImageURL,
-                    },
-                    treeNode
-                  );
-                }
-                //If it is a folder
-                else {
-                  instance.addContentFolder(
-                    {
-                      id: item.folderId.toString(),
-                      label: item.name,
-                      showCheckbox: enableCheckbox,
-                      rowCheckerId: item.rowCheckerId,
-                      rowCheckerName: `rowIds${item.rowCheckerName}`,
-                      expanded: false,
-                      fullLoaded: false,
-                    },
-                    treeNode
-                  );
-                }
-              });
-
+          self.getFoldersAndFileEntriesAndFileShortcuts(
+            instance.repository,
+            treeNode.get(NODE_ATTR_ID),
+            QUERY_ALL,
+            QUERY_ALL,
+            function(entries) {
+              self.renderDLChildren(entries, { treeNode });
               treeNode.set(NODE_ATTR_FULL_LOADED, true);
               treeNode.expand();
               self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
-            }
-          );
+          });
         },
 
         _getWCChildren: function (treeNode, instance) {
@@ -1133,6 +1161,9 @@ YUI.add(
           rootFolderId: {
             value: null,
           },
+          currentFolderId: {
+            value: null,
+          },
           rootFolderLabel: {
             value: null,
           },
@@ -1151,7 +1182,9 @@ YUI.add(
           defaultDocumentImagePath: {
             value: null,
           },
-
+          pageSize: {
+            value: 5,
+          },
           containerId: {
             value: ENTRIES_CONTAINER,
           },

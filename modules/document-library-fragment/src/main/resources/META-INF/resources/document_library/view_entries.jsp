@@ -143,16 +143,6 @@ if (portletTitleBasedNavigation && (folderId != DLFolderConstants.DEFAULT_PARENT
 				%>
 
 				<c:choose>
-					<%-- BEGIN Rivet Logic --%>
-					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>&nbsp;</liferay-ui:search-container-column-text>
-						<%
-						request.setAttribute("view_entries.jsp-fileShortcut", fileShortcut);
-						request.setAttribute("view_entries.jsp-fileEntry", fileEntry);
-						%>
-						<liferay-util:include page="/document_library/view_file_entry_tree.jsp" servletContext="<%= application %>" />
-					</c:when>
-					<%-- END Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals("descriptive") %>'>
 						<c:choose>
 							<c:when test="<%= Validator.isNotNull(thumbnailSrc) %>">
@@ -397,15 +387,6 @@ if (portletTitleBasedNavigation && (folderId != DLFolderConstants.DEFAULT_PARENT
 				%>
 
 				<c:choose>
-					<%-- BEGIN Rivet Logic --%>
-					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>&nbsp;</liferay-ui:search-container-column-text>
-						<%
-						request.setAttribute("view_entries.jsp-folder", curFolder);
-						%>
-						<liferay-util:include page="/document_library/view_folder_tree.jsp" servletContext="<%= application %>" />
-					</c:when>
-					<%-- END Rivet Logic --%>
 					<c:when test='<%= displayStyle.equals("descriptive") %>'>
 						<liferay-ui:search-container-column-icon
 							icon='<%= curFolder.isMountPoint() ? "repository" : "folder" %>'
