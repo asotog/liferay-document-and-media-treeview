@@ -22,6 +22,7 @@ YUI.add(
 
     A.Rivet.TreeTargetJournal = "journal";
     A.Rivet.TreeTargetDL = "documentLibrary";
+    var TYPED_SEARCH_MIN_CHARS = 3;
     var ENTRIES_CONTAINER = "entries";
     var ENTRIES_SEARCH_CONTAINER = "entriesSearchContainer";
     var BOUNDING_BOX = "boundingBox";
@@ -47,6 +48,18 @@ YUI.add(
     var TPT_ENCODED_DELIM_CLOSE = "&#x7d;&#x7d;";
     var TPL_PREVIEW_NODE =
       '<img src="{previewFileURL}" id="{imgId}" class="treePreviewImg"/>';
+    var TPL_KEYWORDS_FILTER = `
+      <div class="form-group search-form">
+        <div class="input-group">
+          <div class="input-group-item input-group-prepend">
+            <input placeholder="${Liferay.Language.get('search')}" type="text" class="form-control">
+          </div>
+          <div class="input-group-item input-group-append input-group-item-shrink">
+            <button button class="btn btn-secondary" type="button" disabled>${Liferay.Language.get('clear')}</button>
+          </div>
+        </div>
+      </div>
+    `;
     var WORKFLOW_STATUS_ANY = -1;
     var QUERY_ALL = -1;
     var REG_EXP_GLOBAL = "g";
@@ -121,7 +134,7 @@ YUI.add(
           searchContainerElement.append(
             '<div id="' +
               previewBoundingBoxId +
-              '" class="rl-tree-preview"></div>'
+              '" class="rl-tree-preview"><div class="sheet"></div></div>'
           );
           entriesContainer.append(
             '<div id="' + boundingBoxId + '" class="sheet bounding-box"></div>'
@@ -136,7 +149,7 @@ YUI.add(
             .one(".hidden-bounding-box")
             .hide();
           this.previewBoundingBox = searchContainerElement.one(
-            ".rl-tree-preview"
+            ".rl-tree-preview .sheet"
           );
 
           this.contentTree = new A.TreeViewDD({
@@ -161,14 +174,14 @@ YUI.add(
             },
           }).render();
 
-          A.one("#" + boundingBoxId).addClass("sheet");
-
           this.contentRoot = this.contentTree.getNodeById(folderId);
           this.contentRoot.set(NODE_ATTR_IS_FOLDER, true);
           this.contentRoot.set(NODE_ATTR_FULL_LOADED, true);
 
           // Adding this event on this way because the click event seems on creation seems to be on tree level
           var boundingBox = this.contentTree.get(BOUNDING_BOX);
+          boundingBox.prepend(TPL_KEYWORDS_FILTER);
+          boundingBox.addClass("sheet")
           boundingBox.delegate(
             "click",
             A.bind(instance._clickHandler, this),
@@ -238,6 +251,56 @@ YUI.add(
             Liferay.Util.submitForm = originalSubmitForm;
           });
           
+          this.initSearch();
+        },
+
+        initSearch: function() {
+          const boundingBox = this.contentTree.get(BOUNDING_BOX);
+          const searchForm = boundingBox.one('.search-form');
+          const input = searchForm.one('input');
+          const button = searchForm.one('button');
+          const clear = () => {
+            input.set('value', '');
+            button.setAttribute('disabled', 'disabled');
+            this.search(false);
+          };
+          
+          input.on('keyup', A.debounce((e) => {
+            const value = e.target.val().trim();
+            if (value.length >= TYPED_SEARCH_MIN_CHARS) {
+              this.search(value);
+            }
+            if (value.length === 0) {
+              clear();
+            } else {
+              button.removeAttribute('disabled');
+            }
+          }, 400));
+          button.on('click', (e) => {
+            clear();
+          });
+        },
+
+        search: function(keywords) {
+          const boundingBox = this.contentTree.get(BOUNDING_BOX);
+          boundingBox.all('.tree-node').each((node) => {
+            // if keywords and is a leaf (not a folder)
+            if (keywords && node.one('> .tree-node-leaf')) {
+              const _label = node.getAttribute('data-label').toLowerCase();
+              const _keywords = keywords.toLowerCase();
+              node.toggleClass('d-none', !_label.includes(_keywords));
+            } else {
+              node.toggleClass('d-none', false);
+            }
+          });
+        },
+
+        // call this when folder is expanded and just loaded more items
+        applySearch: function() {
+          const boundingBox = this.contentTree.get(BOUNDING_BOX);
+          const searchForm = boundingBox.one('.search-form');
+          const input = searchForm.one('input');
+          this.search(input.get('value'));
         },
 
         addContentFolder: function (newNodeConfig, parentNode) {
@@ -904,6 +967,7 @@ YUI.add(
           var nodeType = "";
           var label = newNodeConfig.label;
           var nodeId = newNodeConfig.id;
+          var boundingBox = this.contentTree.get(BOUNDING_BOX);
 
           if (
             parentNode === undefined &&
@@ -962,6 +1026,7 @@ YUI.add(
           // only add the node if it is not already there
           if (!match || newNodeConfig.shortcut) {
             parentNode.appendChild(newNode);
+            boundingBox.one(`[id="${nodeId}"].tree-node`).setAttribute('data-label', label);
           }
 
           if (nodeType === NODE_TYPE_CHECKBOX) {
@@ -969,7 +1034,6 @@ YUI.add(
             this._addProcessCheckbox(newNodeConfig);
           }
 
-          boundingBox = this.contentTree.get(BOUNDING_BOX);
           boundingBox.detach("click");
           boundingBox.detach("mouseover");
           boundingBox.delegate(
@@ -983,8 +1047,6 @@ YUI.add(
             NODE_SELECTOR
           );
           this.contentTree.bindUI();
-
-          boundingBox.all(NODE_SELECTOR).setAttribute('draggable', true);
         },
 
         _addProcessCheckbox: function (newNodeConfig) {
@@ -1085,6 +1147,7 @@ YUI.add(
               treeNode.set(NODE_ATTR_FULL_LOADED, true);
               treeNode.expand();
               self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
+              self.applySearch();
           });
         },
 
@@ -1142,6 +1205,7 @@ YUI.add(
               treeNode.set(NODE_ATTR_FULL_LOADED, true);
               treeNode.expand();
               self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
+              self.applySearch();
             });
         },
 

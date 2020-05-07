@@ -1,17 +1,15 @@
 /* Custom  */
 .document-container .rl-tree-preview,
 .journal-container .rl-tree-preview {
-	
-	background: #f5f5f5 ;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
     float: right;
-    height: auto;
     width: 40%;
-    padding: 20px;
     text-align:center;
+    padding: 0 20px;
     position: relative;
+    .sheet {
+        min-height: 200px;
+        padding-bottom: 1.5rem;
+    }
 }
 
 .treePreviewImg {
@@ -48,6 +46,9 @@
     .tree-node-leaf {
         margin-left: 20px;
     }
+    .glyphicon {
+        color: #6B6C7E;
+    }
 }
 
 .has-tree-view .pagination-bar {
@@ -64,4 +65,10 @@
 
 .tree-node-content .tree-label {
     margin-left: 6px;
+}
+
+.has-tree-view {
+    .tree-node-content .tree-label {
+        font-size: 14px;
+    }
 }
