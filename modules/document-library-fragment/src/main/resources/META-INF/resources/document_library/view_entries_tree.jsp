@@ -90,93 +90,12 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 		pageSize: <%=TREE_PAGE_SIZE %>,
 		rootFolderId:'<%= treeFolderId %>',
 		currentFolderId: '<%= currFolderId %>',
+		ancestorsFoldersIds: <%= ancestorIds %>,
         rootFolderLabel: '<%= treeFolderTitle %>',
         checkAllId: '<%= RowChecker.ALL_ROW_IDS %>',
         viewPageBaseURL: '<%= viewFileEntryURL %>',
         defaultDocumentImagePath: '<%= themeDisplay.getPathThemeImages() + "/file_system/large/" %>',
         shortcutImageURL: '<%= themeDisplay.getPathThemeImages()+"/file_system/large/overlay_link.png" %>'
     });
-	<% 
-		// If current folder is not root (home)
-		if (currFolderId != treeFolderId){
-	     
-		 	// Add ancestors' children 
-	        for (Long ancestorId:  ancestorIds){ 
-	            
-	            // Folders
-			    List<Folder> cFolders = DLAppServiceUtil.getFolders(repositoryId, ancestorId);		    
-			    
-			    for (Folder cFolder: cFolders){
-			        boolean isAncestor = false;
-				    if ( (cFolder.getFolderId() == currFolderId ) || (ancestorIds.contains(cFolder.getFolderId())) ){
-				       isAncestor = true;
-				    }
-		        	%>
-			    	<portlet:namespace />treeView.addContentFolder({
-						id: '<%= cFolder.getFolderId() %>',
-						label: '<%= cFolder.getName() %>',
-						showCheckbox: '<%= DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.DELETE) || DLFolderPermission.contains(permissionChecker, cFolder, ActionKeys.UPDATE) %>',
-						rowCheckerId: '<%= String.valueOf(cFolder.getFolderId()) %>',
-						rowCheckerName: 'rowIds<%= Folder.class.getSimpleName() %>',
-						parentFolderId: '<%= cFolder.getParentFolderId() %>',
-						expanded : <%= isAncestor %>,
-	   			    	fullLoaded : <%= isAncestor %>
-					});
-			    	<%		 
-			    }
-			    
-			    // Files
-			    List<Object> items = DLAppServiceUtil.getFileEntriesAndFileShortcuts(repositoryId, ancestorId, WorkflowConstants.STATUS_ANY, 0, TREE_PAGE_SIZE);	
-			    
-			    for (Object item: items){
-			         
-			        FileEntry fileEntry = null;
-			        FileShortcut fileShortcut = null;
-			        String rowCheckerName = "";
-			        String rowCheckerId = "";
-			        boolean isShortcut = false;
-			        long parentFolderId = 0;
-			        
-			        if (item instanceof FileEntry) {
-			            fileEntry = (FileEntry)item;
-			            fileEntry = fileEntry.toEscapedModel();
-			            rowCheckerName = FileEntry.class.getSimpleName();
-				        rowCheckerId = String.valueOf(fileEntry.getFileEntryId());
-				        parentFolderId = fileEntry.getFolderId();
-				       
-			        }
-			        else {		            
-			            fileShortcut = (FileShortcut)item;
-			            fileShortcut = fileShortcut.toEscapedModel();
-			        	fileEntry = DLAppLocalServiceUtil.getFileEntry(fileShortcut.getToFileEntryId());
-			        	fileEntry = fileEntry.toEscapedModel();
-			        	rowCheckerName = DLFileShortcut.class.getSimpleName();
-			        	rowCheckerId = String.valueOf(fileShortcut.getFileShortcutId());
-			        	isShortcut = true;
-			        	parentFolderId = fileShortcut.getFolderId();
-			        }		        		        
-			        FileVersion latestFileVersion = fileEntry.getFileVersion();
-			        PortletURL tempRowURL = liferayPortletResponse.createRenderURL();
-					tempRowURL.setParameter("struts_action", "/document_library/view_file_entry");
-					tempRowURL.setParameter("redirect", HttpUtil.removeParameter(currentURL, liferayPortletResponse.getNamespace() + "ajax"));
-					tempRowURL.setParameter("fileEntryId", String.valueOf(latestFileVersion.getFileEntryId()));
-			        %>
-
-			        <portlet:namespace />treeView.addContentEntry({
-			        	id : '<%= latestFileVersion.getFileEntryId() %>',
-			        	label: '<%= latestFileVersion.getTitle() %>',
-			        	shortcut: <%= isShortcut %>,
-			        	showCheckbox: '<%= DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.DELETE) || DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.UPDATE) %>',
-			        	rowCheckerId: '<%= String.valueOf(rowCheckerId) %>',
-			        	rowCheckerName: 'rowIds<%= rowCheckerName %>',
-			        	parentFolderId: '<%= parentFolderId %>',
-			        	previewURL:'<%= DLURLHelperUtil.getThumbnailSrc(fileEntry, latestFileVersion, themeDisplay) %>',
-			        	viewURL: '<%= tempRowURL %>'  	
-			        });
-			        <%
-			    }
-			}
-		}
-	%>
-	<portlet:namespace />treeView.loadRootFolderNodes();
+	<portlet:namespace />treeView.initialLoad();
 </aui:script>

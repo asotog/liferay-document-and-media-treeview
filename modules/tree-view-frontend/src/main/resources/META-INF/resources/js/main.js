@@ -264,15 +264,26 @@ YUI.add(
         },
 
 
-        loadRootFolderNodes: function() {
+        initialLoad: function() {
           var self = this;
+          const folders = self.get('ancestorsFoldersIds');
+          folders.push(this.get("currentFolderId"));
+          this._recursiveLoadDL(0, folders);
+        },
+
+        _recursiveLoadDL: function(index, folders) {
+          const self = this;
           this.getFoldersAndFileEntriesAndFileShortcuts(
             this.get("repositoryId"),
-            this.get("currentFolderId"),
+            folders[index],
             0,
             this.get('pageSize'),
             function(entries) {
-              self.renderDLChildren(entries, { parentFolderId: self.get("currentFolderId") });
+              self._renderDLChildren(entries, { parentFolderId: folders[index], isInitialLoad: true });
+              const next = index + 1;
+              if (next < folders.length) {
+                self._recursiveLoadDL(next, folders);
+              }
             });
         },
 
@@ -983,7 +994,7 @@ YUI.add(
           );
         },
         
-        renderDLChildren: function(entries, options) {
+        _renderDLChildren: function(entries, options) {
           var instance = this;
           A.each(entries, function (item) {
             var enableCheckbox =
@@ -1000,7 +1011,7 @@ YUI.add(
                   rowCheckerId: item.rowCheckerId,
                   parentFolderId: options.parentFolderId,
                   rowCheckerName: `rowIds${item.rowCheckerName}`,
-                  expanded: false,
+                  expanded: options.expanded,
                   fullLoaded: true,
                   previewURL: documentImageURL,
                 },
@@ -1016,9 +1027,9 @@ YUI.add(
                   showCheckbox: enableCheckbox,
                   rowCheckerId: item.rowCheckerId,
                   rowCheckerName: `rowIds${item.rowCheckerName}`,
-                  expanded: false,
+                  expanded: options.isInitialLoad ? instance.get('ancestorsFoldersIds').includes(item.folderId) : false,
                   parentFolderId: options.parentFolderId,
-                  fullLoaded: false,
+                  fullLoaded: options.isInitialLoad ? instance.get('ancestorsFoldersIds').includes(item.folderId) : false,
                 },
                 options.treeNode
               );
@@ -1035,7 +1046,7 @@ YUI.add(
             QUERY_ALL,
             QUERY_ALL,
             function(entries) {
-              self.renderDLChildren(entries, { treeNode });
+              self._renderDLChildren(entries, { treeNode });
               treeNode.set(NODE_ATTR_FULL_LOADED, true);
               treeNode.expand();
               self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
@@ -1163,6 +1174,9 @@ YUI.add(
           },
           currentFolderId: {
             value: null,
+          },
+          ancestorsFoldersIds: {
+            value: []
           },
           rootFolderLabel: {
             value: null,
