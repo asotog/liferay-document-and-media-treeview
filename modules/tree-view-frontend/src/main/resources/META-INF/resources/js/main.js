@@ -191,8 +191,9 @@ YUI.add(
             searchParams.set(`${this.ns}folderId`, '0');
             redirectURL.search = searchParams.toString();
             redirectInput.set('value', redirectURL.toString());
-            folderIdInput.set('value', '0');
-
+            if (folderIdInput) {
+              folderIdInput.set('value', '0');
+            }
             originalSubmitForm(form);
           };
         
@@ -268,7 +269,12 @@ YUI.add(
           var self = this;
           const folders = self.get('ancestorsFoldersIds');
           folders.push(this.get("currentFolderId"));
-          this._recursiveLoadDL(0, folders);
+          console.log(folders);
+          if (this._isDLTarget()) {
+            this._recursiveLoadDL(0, folders);
+          } else {
+            this._recursiveLoadJournal(0, folders);
+          }
         },
 
         _recursiveLoadDL: function(index, folders) {
@@ -276,13 +282,29 @@ YUI.add(
           this.getFoldersAndFileEntriesAndFileShortcuts(
             this.get("repositoryId"),
             folders[index],
-            0,
-            this.get('pageSize'),
+            QUERY_ALL,
+            QUERY_ALL,
             function(entries) {
               self._renderDLChildren(entries, { parentFolderId: folders[index], isInitialLoad: true });
               const next = index + 1;
               if (next < folders.length) {
                 self._recursiveLoadDL(next, folders);
+              }
+            });
+        },
+
+        _recursiveLoadJournal: function(index, folders) {
+          const self = this;
+          this.getFoldersAndArticles(
+            self.scopeGroupId,
+            folders[index],
+            QUERY_ALL,
+            QUERY_ALL,
+            function(entries) {
+              self._renderJournalChildren(entries, { parentFolderId: folders[index], isInitialLoad: true });
+              const next = index + 1;
+              if (next < folders.length) {
+                self._recursiveLoadJournal(next, folders);
               }
             });
         },
@@ -993,6 +1015,19 @@ YUI.add(
             callback
           );
         },
+
+        getFoldersAndArticles(groupId, folderId,  start, end, callback) {
+          Liferay.Service(
+            "/rivetlogic_treeview.enhancedjournalapp/get-folders-and-articles",
+            {
+              groupId: groupId,
+              folderId: folderId,
+              start: start,
+              end: end,
+            },
+            callback
+          );
+        },
         
         _renderDLChildren: function(entries, options) {
           var instance = this;
@@ -1053,61 +1088,61 @@ YUI.add(
           });
         },
 
+        _renderJournalChildren: function(entries, options) {
+          var instance = this;
+          A.each(entries, function (item) {
+            var enableCheckbox =
+              item.deletePermission || item.updatePermission;
+            //if it is an article
+            if (item.articleId !== undefined) {
+              enableCheckbox = enableCheckbox || item.expirePermission;
+              var articleImageURL = instance._getArticleImageURL(item);
+              instance.addContentEntry(
+                {
+                  id: item.articleId.toString(),
+                  label: item.title,
+                  showCheckbox: enableCheckbox,
+                  rowCheckerId: item.rowCheckerId,
+                  rowCheckerName: `rowIds${item.rowCheckerName}`,
+                  expanded: false,
+                  parentFolderId: options.parentFolderId,
+                  fullLoaded: true,
+                  previewURL: articleImageURL,
+                },
+                options.treeNode
+              );
+            }
+            //If it is a folder
+            else {
+              instance.addContentFolder(
+                {
+                  id: item.folderId.toString(),
+                  label: item.name,
+                  showCheckbox: enableCheckbox,
+                  rowCheckerId: item.rowCheckerId,
+                  rowCheckerName: `rowIds${item.rowCheckerName}`,
+                  parentFolderId: options.parentFolderId,
+                  expanded: options.isInitialLoad ? instance.get('ancestorsFoldersIds').includes(item.folderId) : false,
+                  fullLoaded: options.isInitialLoad ? instance.get('ancestorsFoldersIds').includes(item.folderId) : false
+                },
+                options.treeNode
+              );
+            }
+          });
+        },
+
         _getWCChildren: function (treeNode, instance) {
           var self = this;
           // Get folders children of this folder
-          Liferay.Service(
-            "/rivetlogic_treeview.enhancedjournalapp/get-folders-and-articles",
-            {
-              groupId: instance.scopeGroupId,
-              folderId: treeNode.get(NODE_ATTR_ID),
-              start: QUERY_ALL,
-              end: QUERY_ALL,
-            },
-            function (entries) {
-              A.each(entries, function (item, index, collection) {
-                var enableCheckbox =
-                  item.deletePermission || item.updatePermission;
-                //if it is an article
-                if (item.articleId !== undefined) {
-                  enableCheckbox = enableCheckbox || item.expirePermission;
-                  var articleImageURL = instance._getArticleImageURL(item);
-                  instance.addContentEntry(
-                    {
-                      id: item.articleId.toString(),
-                      label: item.title,
-                      showCheckbox: enableCheckbox,
-                      rowCheckerId: item.rowCheckerId,
-                      rowCheckerName: item.rowCheckerName,
-                      expanded: false,
-                      fullLoaded: true,
-                      previewURL: articleImageURL,
-                    },
-                    treeNode
-                  );
-                }
-                //If it is a folder
-                else {
-                  instance.addContentFolder(
-                    {
-                      id: item.folderId.toString(),
-                      label: item.name,
-                      showCheckbox: enableCheckbox,
-                      rowCheckerId: item.rowCheckerId,
-                      rowCheckerName: item.rowCheckerName,
-                      expanded: false,
-                      fullLoaded: false,
-                    },
-                    treeNode
-                  );
-                }
-              });
-
+          self.getFoldersAndArticles(instance.scopeGroupId,
+            treeNode.get(NODE_ATTR_ID),
+            QUERY_ALL,
+            QUERY_ALL, function (entries) {
+              self._renderJournalChildren(entries, { treeNode });
               treeNode.set(NODE_ATTR_FULL_LOADED, true);
               treeNode.expand();
               self.contentTree.get(TOOLTIP_HELPER_PROPERTY).setStyle('display', 'none').hide();
-            }
-          );
+            });
         },
 
         _getArticleImageURL: function (item) {
@@ -1195,9 +1230,6 @@ YUI.add(
           },
           defaultDocumentImagePath: {
             value: null,
-          },
-          pageSize: {
-            value: 5,
           },
           containerId: {
             value: ENTRIES_CONTAINER,

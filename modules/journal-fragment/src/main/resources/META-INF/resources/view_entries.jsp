@@ -98,17 +98,6 @@ String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view d-none" : "
 				%>
 
 				<c:choose>
-					<%-- BEGIN Rivet Logic --%>
-					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>&nbsp;</liferay-ui:search-container-column-text>
-						<%
-						request.setAttribute("view_entries.jsp-article", curArticle);
-						request.setAttribute("view_entries.jsp-tempRowURL", editURL);
-						%>
-						<liferay-util:include page="/view_article_entry_tree.jsp" servletContext="<%= application %>" />
-					</c:when>
-					<%-- END Rivet Logic --%>
-
 					<c:when test='<%= Objects.equals(journalDisplayContext.getDisplayStyle(), "descriptive") %>'>
 						<liferay-ui:search-container-column-text>
 							<liferay-ui:user-portrait
@@ -277,15 +266,6 @@ String treeViewCss = displayStyle.equals(TREE_VIEW) ? "has-tree-view d-none" : "
 				%>
 
 				<c:choose>
-					<%-- BEGIN Rivet Logic --%>
-					<c:when test='<%= displayStyle.equals(TREE_VIEW) %>'>
-						<liferay-ui:search-container-column-text>&nbsp;</liferay-ui:search-container-column-text>
-						<%
-						request.setAttribute("view_entries.jsp-folder", curFolder);
-						%>
-						<liferay-util:include page="/view_folder_tree.jsp" servletContext="<%= application %>" />
-					</c:when>
-					<%-- END Rivet Logic --%>
 					<c:when test='<%= Objects.equals(journalDisplayContext.getDisplayStyle(), "descriptive") %>'>
 						<liferay-ui:search-container-column-icon
 							icon="folder"

@@ -17,7 +17,6 @@ viewFileEntryURL.setParameter("mvcRenderCommandName", "/document_library/view_fi
 viewFileEntryURL.setParameter("redirect", HttpUtil.removeParameter(currentURL, liferayPortletResponse.getNamespace() + "ajax"));
 
 List<Long> ancestorIds = new ArrayList<Long>();
-int TREE_PAGE_SIZE = 5;
 // Root will be always the same (home)
 
 long treeFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
@@ -87,7 +86,6 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
         treeTarget: A.Rivet.TreeTargetDL,
         repositoryId: '<%= repositoryId %>',
 		scopeGroupId: '<%= scopeGroupId %>',
-		pageSize: <%=TREE_PAGE_SIZE %>,
 		rootFolderId:'<%= treeFolderId %>',
 		currentFolderId: '<%= currFolderId %>',
 		ancestorsFoldersIds: <%= ancestorIds %>,

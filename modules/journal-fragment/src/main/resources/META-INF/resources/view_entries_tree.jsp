@@ -86,74 +86,14 @@ if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 		containerId: 'articles',
         treeTarget: A.Rivet.TreeTargetJournal,
         scopeGroupId: '<%= scopeGroupId %>',
-        rootFolderId:'<%= treeFolderId %>',
+		rootFolderId:'<%= treeFolderId %>',
+		currentFolderId: '<%= currFolderId %>',
+		ancestorsFoldersIds: <%= ancestorIds %>,
         rootFolderLabel: '<%= treeFolderTitle %>',
         checkAllId: '<%= RowChecker.ALL_ROW_IDS %>',
 		viewPageBaseURL: '<%= viewArticleURL %>',
 		emptySearchContainerId: 'articlesEmptyResultsMessage',
         defaultArticleImage: '<%= themeDisplay.getPathThemeImages() + "/file_system/large/article.png" %>',
-    });
-    
-	<% 
-		// If current folder is not root (home)
-		if (currFolderId != treeFolderId){
-	     
-		 	// Add ancestors' children 
-	        for (Long ancestorId:  ancestorIds){ 
-	            
-	            // Folders
-			    List<JournalFolder> cFolders = JournalFolderServiceUtil.getFolders(scopeGroupId, ancestorId);		    
-			    
-			    for (JournalFolder cFolder: cFolders){
-			        boolean isAncestor = false;
-				    if ( (cFolder.getFolderId() == currFolderId ) || (ancestorIds.contains(cFolder.getFolderId())) ){
-				       isAncestor = true;
-				    }
-		        	%>
-			    	<portlet:namespace />treeView.addContentFolder({
-						id: '<%= String.valueOf(cFolder.getFolderId()) %>',
-						label: '<%= cFolder.getName() %>',
-						showCheckbox: '<%= JournalFolderPermission.contains(permissionChecker, cFolder, ActionKeys.DELETE) || JournalFolderPermission.contains(permissionChecker, cFolder, ActionKeys.UPDATE) %>',
-						rowCheckerId: '<%= String.valueOf(cFolder.getFolderId()) %>',
-						rowCheckerName: '<%= JournalFolder.class.getSimpleName() %>',
-						parentFolderId: '<%= cFolder.getParentFolderId() %>',
-						expanded : <%= isAncestor %>,
-	   			    	fullLoaded : <%= isAncestor %>
-					});
-			    	<%		 
-			    }
-			    
-			    // Articles
-			    List<JournalArticle> cArticles = JournalArticleServiceUtil.getArticles(scopeGroupId, ancestorId);	
-			    
-			    for (JournalArticle cArticle: cArticles){
-			         
-                    PortletURL tempRowURL = liferayPortletResponse.createRenderURL();
-
-                    tempRowURL.setParameter("mvcPath", "/edit_article.jsp");
-					tempRowURL.setParameter("redirect", currentURL);
-					tempRowURL.setParameter("referringPortletResource", referringPortletResource);
-					tempRowURL.setParameter("groupId", String.valueOf(cArticle.getGroupId()));
-					tempRowURL.setParameter("folderId", String.valueOf(cArticle.getFolderId()));
-					tempRowURL.setParameter("articleId", cArticle.getArticleId());
-                    tempRowURL.setParameter("version", String.valueOf(cArticle.getVersion()));
-                    
-                    String articleImageURL = cArticle.getArticleImageURL(themeDisplay);
-
-			        %>		        
-			        <portlet:namespace />treeView.addContentEntry({
-						id : '<%= cArticle.getArticleId() %>',
-						label: '<%= cArticle.getTitle(locale) %>',
-						showCheckbox: '<%= JournalArticlePermission.contains(permissionChecker, cArticle, ActionKeys.DELETE) || JournalArticlePermission.contains(permissionChecker, cArticle, ActionKeys.EXPIRE) || JournalArticlePermission.contains(permissionChecker, cArticle, ActionKeys.UPDATE) %>',
-						rowCheckerId: '<%= String.valueOf(cArticle.getArticleId()) %>',
-						rowCheckerName: '<%= JournalArticle.class.getSimpleName() %>',
-						parentFolderId: '<%= cArticle.getFolderId() %>',
-						previewURL:'<%= Validator.isNotNull(articleImageURL) ? articleImageURL : themeDisplay.getPathThemeImages() + "/file_system/large/article.png" %>',
-						viewURL: '<%= tempRowURL %>'
-					});
-			        <%
-			    }
-			}
-		}
-	%>
+	});
+	<portlet:namespace />treeView.initialLoad();
 </aui:script>
