@@ -104,7 +104,6 @@ YUI.add(
           this.defaultArticleImage = this.get("defaultArticleImage");
           this.mouseIsDown = false;
           this.checkedArray = [];
-          this.loadingMaskMove;
           this.q = null;
           this.mouseIsDown = false;
 
@@ -230,12 +229,6 @@ YUI.add(
             itemSelectorTemplate
           );
 
-          // loading mask when moving multiple entries
-          this.loadingMaskMove = new A.LoadingMask({
-            "strings.loading": "Moving Files",
-            target: A.one("#" + this.ns + this.get("searchContainerId")),
-          });
-
           // not working properly with senna spa routing, so let's disable it for this form
           boundingBox.ancestor('form').setAttribute('data-senna-off', true);
           boundingBox.ancestor('.lfr-search-container-wrapper').removeClass('hide'); // if no results we show it anyway, overwrite default search container behaviour
@@ -301,6 +294,10 @@ YUI.add(
           const searchForm = boundingBox.one('.search-form');
           const input = searchForm.one('input');
           this.search(input.get('value'));
+        },
+
+        isLoading: function(isLoading) {
+          A.one('html').toggleClass('lfr-spa-loading', isLoading);
         },
 
         addContentFolder: function (newNodeConfig, parentNode) {
@@ -462,15 +459,14 @@ YUI.add(
               // finall callback, when moving all elements is done
               self.q.add(
                 function () {
-                  // hide the loading mask
-                  this.loadingMaskMove.hide();
+                  this.isLoading(false);
                   // hide the helper
                   this.contentTree.get(TOOLTIP_HELPER_PROPERTY).hide();
                 }.bind(self)
               ); // bind the 'this' object to this callback
 
               // Starting async queue, first show the loading mask
-              self.loadingMaskMove.show();
+              this.isLoading(true);
               // Run the async queue
               self.q.run();
             } else {
