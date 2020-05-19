@@ -82,8 +82,7 @@ if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID){
 <aui:script use="rl-content-tree-view">
 	<portlet:namespace />treeView = new A.Rivet.ContentTreeView({
 		namespace: '<portlet:namespace />',
-		searchContainer: Liferay.SearchContainer.get("<portlet:namespace />entries"),
-        treeTarget: A.Rivet.TreeTargetDL,
+		treeTarget: A.Rivet.TreeTargetDL,
         repositoryId: '<%= repositoryId %>',
 		scopeGroupId: '<%= scopeGroupId %>',
 		rootFolderId:'<%= treeFolderId %>',
