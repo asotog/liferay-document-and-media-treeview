@@ -236,15 +236,25 @@ YUI.add(
 
           Liferay.fire("rl-content-tree-view:initialized");
 
+          this.initSearch();
+
+          // on upload complete reload page
+          Liferay.DocumentLibraryUpload.prototype._originalShowFileUploadComplete = Liferay.DocumentLibraryUpload.prototype._showFileUploadComplete;
+          Liferay.DocumentLibraryUpload.prototype._showFileUploadComplete = function(event, displayStyle) {
+            this._originalShowFileUploadComplete(event, displayStyle);
+            Liferay.SPA.app.navigate(document.location.href);
+          };
+
           // destroy DOM before navigate
           Liferay.once("beforeNavigate", function (event) {
             entriesContainer.all(`#${boundingBoxId}`).remove();
             searchContainerElement.all(`#${previewBoundingBoxId}`).remove();
             searchContainerElement.all(`#${hiddenBoundingBoxId}`).remove();
             Liferay.Util.submitForm = originalSubmitForm;
+            Liferay.DocumentLibraryUpload.prototype._showFileUploadComplete = Liferay.DocumentLibraryUpload.prototype._originalShowFileUploadComplete;
+            Liferay.DocumentLibraryUpload.prototype._originalShowFileUploadComplete = null;
           });
           
-          this.initSearch();
         },
 
         initSearch: function() {
@@ -329,7 +339,6 @@ YUI.add(
           var self = this;
           const folders = self.get('ancestorsFoldersIds');
           folders.push(this.get("currentFolderId"));
-          console.log(folders);
           if (this._isDLTarget()) {
             this._recursiveLoadDL(0, folders);
           } else {
