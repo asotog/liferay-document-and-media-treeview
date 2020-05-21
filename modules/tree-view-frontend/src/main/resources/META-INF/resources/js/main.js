@@ -1079,7 +1079,19 @@ YUI.add(
               start: start,
               end: end
             },
-            callback
+            function(entries) {
+              callback(entries.sort((e1, e2) => { 
+                if (e1.rowCheckerName === e2.rowCheckerName) {
+                  return 0;
+                }
+                if (e1.rowCheckerName === 'Folder') {
+                  return -1;
+                }
+                if (e2.rowCheckerName === 'Folder') {
+                  return 1;
+                }
+              }));
+            }
           );
         },
 
