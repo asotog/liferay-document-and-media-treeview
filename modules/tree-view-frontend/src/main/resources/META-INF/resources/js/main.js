@@ -136,7 +136,7 @@ YUI.add(
               '" class="rl-tree-preview"><div class="sheet"></div></div>'
           );
           entriesContainer.append(
-            '<div id="' + boundingBoxId + '" class="sheet bounding-box"></div>'
+            '<div id="' + boundingBoxId + '" class="sheet bounding-box"><div id="treeview-widget"></div></div>'
           );
           searchContainerElement.append(
             '<div id="' +
@@ -152,7 +152,7 @@ YUI.add(
           );
 
           this.contentTree = new A.TreeViewDD({
-            boundingBox: "#" + boundingBoxId,
+            boundingBox: "#treeview-widget",
             children: [
               {
                 id: folderId,
@@ -180,7 +180,6 @@ YUI.add(
           // Adding this event on this way because the click event seems on creation seems to be on tree level
           var boundingBox = this.contentTree.get(BOUNDING_BOX);
           boundingBox.prepend(TPL_KEYWORDS_FILTER);
-          boundingBox.addClass("sheet")
           boundingBox.delegate(
             "click",
             A.bind(instance._clickHandler, this),
